@@ -1,0 +1,142 @@
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    /* Ensure it scrolls on small screens */
+    font-size: 0.95rem;
+}
+
+.table th {
+    background: var(--surface-hover);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+    transition: background 0.2s ease;
+}
+
+.row:hover td {
+    background: var(--surface-hover);
+}
+
+.row:last-child td {
+    border-bottom: none;
+}
+
+/* Column specific styles */
+.dateCol {
+    width: 120px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+.typeCol {
+    width: 140px;
+}
+
+.titleCol {
+    min-width: 300px;
+}
+
+.titleLink {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    line-height: 1.4;
+}
+
+.titleLink:hover {
+    color: var(--primary);
+}
+
+.impactCol {
+    width: 120px;
+}
+
+.linkCol {
+    width: 80px;
+    text-align: center;
+}
+
+.impactBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.impactHigh {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--error);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.impactMedium {
+    background: rgba(234, 179, 8, 0.1);
+    color: var(--warning);
+    border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.impactLow {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.externalLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.externalLink:hover {
+    color: var(--primary);
+    background: var(--primary-light);
+}
+
+.typeTag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85em;
+    background: var(--surface-hover);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .tableContainer {
+        border-radius: 0;
+        border-right: none;
+        border-left: none;
+    }
+}

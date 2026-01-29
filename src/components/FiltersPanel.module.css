@@ -1,0 +1,195 @@
+.toggleButton {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.toggleButton:hover {
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-border-dark);
+}
+
+.panel {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    height: fit-content;
+    position: sticky;
+    top: calc(var(--space-xl) + 60px);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin: 0;
+}
+
+.closeButton {
+    display: none;
+    font-size: var(--font-size-3xl);
+    line-height: 1;
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+}
+
+.closeButton:hover {
+    color: var(--color-text);
+}
+
+.clearButton {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    margin-bottom: var(--space-lg);
+    transition: all var(--transition-base);
+}
+
+.clearButton:hover {
+    background-color: var(--color-bg-tertiary);
+}
+
+.section {
+    margin-bottom: var(--space-xl);
+}
+
+.section:last-child {
+    margin-bottom: 0;
+}
+
+.sectionTitle {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.filterButton {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: left;
+}
+
+.filterButton:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+.filterButton.active {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.count {
+    font-size: var(--font-size-xs);
+    opacity: 0.8;
+}
+
+.select {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.overlay {
+    display: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 1024px) {
+    .panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 320px;
+        max-width: 85vw;
+        transform: translateX(100%);
+        transition: transform var(--transition-base);
+        z-index: 1000;
+        border-radius: 0;
+        border: none;
+        border-left: 1px solid var(--color-border);
+        overflow-y: auto;
+    }
+
+    .panelOpen {
+        transform: translateX(0);
+    }
+
+    .closeButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+}
+
+@media (min-width: 1025px) {
+    .toggleButton {
+        display: none;
+    }
+}

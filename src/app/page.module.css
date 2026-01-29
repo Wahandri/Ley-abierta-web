@@ -1,123 +1,92 @@
 .explorerPage {
-  padding: var(--space-2xl) 0;
-  min-height: calc(100vh - 200px);
+  min-height: 100vh;
+  background-color: var(--color-bg);
 }
 
-/* Mobile filter toggle */
-.mobileFilterToggle {
-  display: none;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-lg);
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-  margin-bottom: var(--space-lg);
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-sm);
-}
-
-.mobileFilterToggle:hover {
-  background-color: var(--color-primary-dark);
-  box-shadow: var(--shadow-md);
-}
-
-.mobileFilterToggle svg {
-  flex-shrink: 0;
-}
-
-.filterBadge {
-  background-color: rgba(255, 255, 255, 0.3);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-}
-
-/* Explorer layout */
+/* Remove container constraint for full width */
 .explorerLayout {
   display: grid;
   grid-template-columns: 320px 1fr;
-  gap: var(--space-2xl);
+  /* Fixed sidebar width + fluid content */
+  min-height: 100vh;
   align-items: start;
 }
 
 .sidebarContainer {
-  /* Sidebar is sticky within this container */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  z-index: 10;
 }
 
 .mainContent {
-  min-height: 600px;
+  padding: 2rem;
+  max-width: 1600px;
+  /* Optional max-width for very large screens */
+  margin: 0 auto;
+  width: 100%;
 }
 
-/* Header */
 .header {
-  margin-bottom: var(--space-2xl);
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .title {
-  font-size: var(--font-size-4xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  margin-bottom: var(--space-sm);
-  line-height: var(--line-height-tight);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-  font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
-  margin: 0;
+  font-size: 1.1rem;
+}
+
+.mobileFilterToggle {
+  display: none;
+  /* Hidden by default on desktop */
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
   .explorerLayout {
-    grid-template-columns: 1fr;
-    gap: 0;
+    display: block;
+    /* Stack on smaller screens */
   }
 
-  /* Keep sidebar container in DOM for mobile drawer */
   .sidebarContainer {
-    /* The sidebar itself (ExplorerSidebar) will handle its mobile positioning */
+    display: none;
+    /* Hide sidebar, use drawer instead */
   }
 
   .mobileFilterToggle {
-    display: inline-flex;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: var(--color-primary);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 9999px;
+    box-shadow: var(--shadow-lg);
+    z-index: 50;
+    font-weight: 500;
   }
 
-  .mainContent {
-    min-height: 400px;
-  }
-}
-
-@media (max-width: 768px) {
-  .explorerPage {
-    padding: var(--space-lg) 0;
-  }
-
-  .header {
-    margin-bottom: var(--space-lg);
-  }
-
-  .title {
-    font-size: var(--font-size-3xl);
-  }
-
-  .subtitle {
-    font-size: var(--font-size-base);
-  }
-}
-
-@media (max-width: 480px) {
-  .title {
-    font-size: var(--font-size-2xl);
-  }
-
-  .subtitle {
-    font-size: var(--font-size-sm);
+  .filterBadge {
+    background: white;
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    margin-left: 0.25rem;
   }
 }

@@ -24,9 +24,6 @@
 
 .mainContent {
   padding: 2rem;
-  max-width: 1600px;
-  /* Optional max-width for very large screens */
-  margin: 0 auto;
   width: 100%;
 }
 

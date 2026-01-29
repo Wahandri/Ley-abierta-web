@@ -21,56 +21,54 @@ export default function Home() {
 
   return (
     <div className={styles.explorerPage}>
-      <div className="container">
-        {/* Mobile filters toggle */}
-        <button
-          className={styles.mobileFilterToggle}
-          onClick={() => setSidebarOpen(true)}
-          aria-label="Abrir filtros"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2.5 5.83333H17.5M5.83333 10H14.1667M8.33333 14.1667H11.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-          Filtros
-          {facets && (
-            <span className={styles.filterBadge}>
-              {Object.keys(facets.topic_counts || {}).length}
-            </span>
-          )}
-        </button>
+      {/* Mobile filters toggle */}
+      <button
+        className={styles.mobileFilterToggle}
+        onClick={() => setSidebarOpen(true)}
+        aria-label="Abrir filtros"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.5 5.83333H17.5M5.83333 10H14.1667M8.33333 14.1667H11.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        Filtros
+        {facets && (
+          <span className={styles.filterBadge}>
+            {Object.keys(facets.topic_counts || {}).length}
+          </span>
+        )}
+      </button>
 
-        <div className={styles.explorerLayout}>
-          {/* Sidebar */}
-          <div className={styles.sidebarContainer}>
-            <Suspense fallback={<Skeleton />}>
-              <ExplorerSidebar
-                facets={facets}
-                totalResults={totalResults}
-                isOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-              />
-            </Suspense>
+      <div className={styles.explorerLayout}>
+        {/* Sidebar */}
+        <div className={styles.sidebarContainer}>
+          <Suspense fallback={<Skeleton />}>
+            <ExplorerSidebar
+              facets={facets}
+              totalResults={totalResults}
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+            />
+          </Suspense>
+        </div>
+
+        {/* Main content */}
+        <main className={styles.mainContent}>
+          <div className={styles.header}>
+            <h1 className={styles.title}>
+              Documentos Legislativos
+            </h1>
+            <p className={styles.subtitle}>
+              Explora todas las leyes y normativas en lenguaje claro
+            </p>
           </div>
 
-          {/* Main content */}
-          <main className={styles.mainContent}>
-            <div className={styles.header}>
-              <h1 className={styles.title}>
-                Documentos Legislativos
-              </h1>
-              <p className={styles.subtitle}>
-                Explora todas las leyes y normativas en lenguaje claro
-              </p>
-            </div>
-
-            <Suspense fallback={<div className="container"><Skeleton /></div>}>
-              <ExplorerResults
-                onFacetsUpdate={handleFacetsUpdate}
-                onTotalUpdate={handleTotalUpdate}
-              />
-            </Suspense>
-          </main>
-        </div>
+          <Suspense fallback={<div className="container"><Skeleton /></div>}>
+            <ExplorerResults
+              onFacetsUpdate={handleFacetsUpdate}
+              onTotalUpdate={handleTotalUpdate}
+            />
+          </Suspense>
+        </main>
       </div>
     </div>
   );

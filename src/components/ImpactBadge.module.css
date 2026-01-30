@@ -25,7 +25,7 @@
 
 .mid {
     background-color: var(--color-impact-mid);
-    color: white;
+    color: var(--color-primary-dark);
     border: 1px solid transparent;
 }
 

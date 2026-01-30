@@ -1,6 +1,6 @@
 .explorerPage {
-  min-height: 100vh;
-  background-color: var(--color-bg-alt);
+    min-height: 100vh;
+    background-color: var(--color-bg);
 }
 
 .explorerLayout {
@@ -21,7 +21,7 @@
   overflow-y: hidden;
   /* Sidebar component handles its own scroll internally */
   border-right: 1px solid var(--color-border);
-  background-color: var(--color-bg);
+  background-color: var(--color-bg-secondary);
   z-index: 20;
 }
 
@@ -80,7 +80,7 @@
     right: 2rem;
     z-index: 100;
 
-    background-color: var(--color-primary);
+    background-color: var(--color-accent);
     color: white;
 
     padding: var(--space-md) var(--space-lg);

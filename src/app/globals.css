@@ -30,56 +30,48 @@ body {
    ========================================== */
 
 :root {
-  /* Colors - Editorial & Premium Palette */
+  /* Colors - Editorial Palette */
 
-  /* Primary: Deep Royal / Institutional Blue but modern */
-  --color-primary: #2c3e50;
-  /* Dark Slate Blue */
-  --color-primary-dark: #1a252f;
-  --color-primary-light: #34495e;
-  --color-primary-soft: #f1f5f9;
-  /* Very light slate for backgrounds */
+  /* Primary: Blue Grey (structure & text) */
+  --color-primary: #5a6475;
+  --color-primary-dark: #3f4756;
+  --color-primary-light: #7c8697;
+  --color-primary-soft: rgba(90, 100, 117, 0.08);
 
-  /* Secondary: Neutral Greys */
-  --color-secondary: #64748b;
-  --color-secondary-dark: #334155;
-  --color-secondary-light: #94a3b8;
-
-  /* Accent: Vibrant but controlled */
-  --color-accent: #2563eb;
-  /* Royal Blue for links/active states */
-  --color-accent-hover: #1d4ed8;
+  /* Accent: Soft Green (actions & emphasis) */
+  --color-accent: #9bc3b0;
+  --color-accent-hover: #88b3a1;
+  --color-accent-soft: rgba(155, 195, 176, 0.18);
 
   /* Backgrounds */
   --color-bg: #ffffff;
-  /* Pure white background for cleanliness */
-  --color-bg-alt: #f8fafc;
-  /* Slight off-white for contrast areas */
+  --color-bg-alt: rgba(90, 100, 117, 0.03);
   --color-bg-card: #ffffff;
-  --color-bg-hover: #f1f5f9;
+  --color-bg-hover: rgba(90, 100, 117, 0.06);
+  --color-bg-secondary: rgba(90, 100, 117, 0.04);
+  --color-bg-tertiary: rgba(90, 100, 117, 0.07);
 
-  /* Text - High Contrast for Readability */
-  --color-text: #0f172a;
-  /* Almost Black */
-  --color-text-secondary: #475569;
-  /* Dark Grey */
-  --color-text-muted: #94a3b8;
-  /* Light Grey */
+  /* Text */
+  --color-text: #4b5565;
+  --color-text-secondary: #6b7586;
+  --color-text-muted: #8a95a6;
 
   /* Borders */
-  --color-border: #e2e8f0;
-  --color-border-dark: #cbd5e1;
+  --color-border: rgba(90, 100, 117, 0.18);
+  --color-border-light: rgba(90, 100, 117, 0.12);
+  --color-border-dark: rgba(90, 100, 117, 0.28);
 
-  /* Impact Colors - Clear Signal logic */
-  --color-impact-low: #059669;
-  /* Emerald 600 */
-  --color-impact-low-bg: #ecfdf5;
-  --color-impact-mid: #d97706;
-  /* Amber 600 */
-  --color-impact-mid-bg: #fffbeb;
-  --color-impact-high: #dc2626;
-  /* Red 600 */
-  --color-impact-high-bg: #fef2f2;
+  /* Impact Colors - Neutralized to palette */
+  --color-impact-low: rgba(155, 195, 176, 0.6);
+  --color-impact-low-bg: rgba(155, 195, 176, 0.18);
+  --color-impact-mid: rgba(155, 195, 176, 0.85);
+  --color-impact-mid-bg: rgba(155, 195, 176, 0.28);
+  --color-impact-high: rgba(90, 100, 117, 0.9);
+  --color-impact-high-bg: rgba(90, 100, 117, 0.12);
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(90, 100, 117, 0.12);
 
   /* Shadows - Minimalist */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -181,18 +173,18 @@ p {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-text);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--color-primary-dark);
+  color: var(--color-accent);
   text-decoration: underline;
 }
 
 a:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -239,7 +231,7 @@ a:focus-visible {
    ========================================== */
 
 *:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
@@ -247,7 +239,7 @@ button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
@@ -279,23 +271,25 @@ button {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-accent);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-primary-dark);
+  background-color: var(--color-accent-hover);
   text-decoration: none;
 }
 
 .btn-secondary {
-  background-color: var(--color-bg-secondary);
-  color: var(--color-text);
-  border-color: var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+  border-color: var(--color-border-dark);
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-bg-tertiary);
+  background-color: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  color: var(--color-primary-dark);
   text-decoration: none;
 }
 

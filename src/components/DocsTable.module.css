@@ -9,8 +9,8 @@
 }
 
 .tableContainer:hover {
-    box-shadow: var(--shadow-xl);
-    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
 }
 
 .table {
@@ -74,7 +74,7 @@
 }
 
 .titleLink:hover {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 
 .impactCol {
@@ -97,21 +97,21 @@
 }
 
 .impactHigh {
-    background: rgba(220, 38, 38, 0.1);
-    color: var(--color-error, #dc2626);
-    border: 1px solid rgba(220, 38, 38, 0.2);
+    background: var(--color-impact-high-bg);
+    color: var(--color-primary-dark);
+    border: 1px solid rgba(90, 100, 117, 0.25);
 }
 
 .impactMedium {
-    background: rgba(234, 179, 8, 0.1);
-    color: var(--color-warning, #eab308);
-    border: 1px solid rgba(234, 179, 8, 0.2);
+    background: var(--color-impact-mid-bg);
+    color: var(--color-primary-dark);
+    border: 1px solid rgba(155, 195, 176, 0.4);
 }
 
 .impactLow {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--color-success, #10b981);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: var(--color-impact-low-bg);
+    color: var(--color-primary-dark);
+    border: 1px solid rgba(155, 195, 176, 0.35);
 }
 
 .externalLink {
@@ -126,8 +126,8 @@
 }
 
 .externalLink:hover {
-    color: var(--color-primary);
-    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    background: var(--color-accent-soft);
     transform: translateY(-2px);
 }
 

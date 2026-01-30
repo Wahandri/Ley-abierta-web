@@ -1,11 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import styles from './Header.module.css';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
+    const isHome = pathname === '/';
+    const isDocs = pathname === '/docs';
+    const isComoFunciona = pathname === '/como-funciona';
 
     return (
         <header className={styles.header}>
@@ -27,14 +32,26 @@ export default function Header() {
                 </button>
 
                 <nav className={`${styles.nav} ${mobileMenuOpen ? styles.navOpen : ''}`}>
-                    <Link href="/" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+                    <Link
+                        href="/"
+                        className={`${styles.navLink} ${isHome ? styles.navLinkActive : ''}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
                         Inicio
                     </Link>
-                    <Link href="/docs" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
+                    <Link
+                        href="/docs"
+                        className={`${styles.navLink} ${isDocs ? styles.navLinkActive : ''}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
                         Documentos
                     </Link>
-                    <Link href="/docs?view=topics" className={styles.navLink} onClick={() => setMobileMenuOpen(false)}>
-                        Temas
+                    <Link
+                        href="/como-funciona"
+                        className={`${styles.navLink} ${isComoFunciona ? styles.navLinkActive : ''}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        Cómo funciona
                     </Link>
                 </nav>
             </div>

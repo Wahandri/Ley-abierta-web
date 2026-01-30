@@ -104,6 +104,15 @@
     transform: scaleX(1);
 }
 
+.navLinkActive {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.navLinkActive::after {
+    transform: scaleX(1);
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
     .hamburger {
@@ -140,6 +149,10 @@
     }
 
     .navLink:hover {
+        background-color: var(--color-bg-secondary);
+    }
+
+    .navLinkActive {
         background-color: var(--color-bg-secondary);
     }
 }

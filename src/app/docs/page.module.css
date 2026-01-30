@@ -1,6 +1,7 @@
 .page {
     min-height: 100vh;
     background-color: var(--color-bg);
+    background-image: radial-gradient(circle at top right, var(--color-primary-soft), transparent 40%);
 }
 
 .layout {
@@ -16,7 +17,7 @@
     height: 100vh;
     overflow-y: auto;
     border-right: 1px solid var(--color-border);
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-card);
     z-index: 10;
 }
 
@@ -37,13 +38,14 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-secondary) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    color: var(--text-secondary);
+    color: var(--color-text-secondary);
     font-size: 1.1rem;
 }
 
@@ -60,10 +62,10 @@
 .introText {
     text-align: center;
     font-size: 1.2rem;
-    color: var(--text-primary);
+    color: var(--color-text);
     font-weight: 500;
     padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .toolbar {
@@ -76,7 +78,7 @@
 }
 
 .resultsInfo {
-    color: var(--text-secondary);
+    color: var(--color-text-secondary);
     font-size: 0.95rem;
 }
 

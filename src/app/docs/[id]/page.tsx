@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import styles from './page.module.css';
 import ImpactBadge from '@/components/ImpactBadge';
 import ImpactBar from '@/components/ImpactBar';
-import { getDocById } from '@/lib/documents';
+import DocCard from '@/components/DocCard';
+import { getDocById, getRelatedDocs } from '@/lib/documents';
 import {
     formatDate,
     getTypeLabel,
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     return {
-        title: `${doc.title_original} - Ley Abierta`,
+        title: `${doc.short_title || doc.title_original} - Ley Abierta`,
         description: doc.summary_plain_es.slice(0, 160),
     };
 }
@@ -40,180 +41,109 @@ export default async function DocDetailPage({ params }: Props) {
         notFound();
     }
 
+    const relatedDocs = await getRelatedDocs(doc, 3);
+    const readingTime = doc.text_length ? Math.ceil(doc.text_length / 200) : 5; // Est. 5 min if missing
+
     return (
-        <div className="container">
-            <div className={styles.page}>
-                <Link href="/docs" className={styles.backLink}>
-                    ← Volver al listado
-                </Link>
+        <div className={styles.page}>
+            {/* Nav */}
+            <Link href="/docs" className={styles.backLink}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Volver
+            </Link>
 
-                <article className={styles.article}>
-                    {/* Header */}
-                    <header className={styles.header}>
-                        <div className={styles.badges}>
-                            <span className={styles.typeBadge}>
-                                {getTypeLabel(doc.type)}
-                            </span>
-                            <span className={styles.topicBadge}>
-                                {getTopicLabel(doc.topic_primary)}
-                            </span>
+            {/* Hero */}
+            <section className={styles.hero}>
+                <div className={styles.heroContent}>
+                    <div className={styles.badges}>
+                        <span className={styles.typeBadge}>
+                            {getTypeLabel(doc.type)}
+                        </span>
+                        <span className={styles.topicBadge}>
+                            {getTopicLabel(doc.topic_primary)}
+                        </span>
+                    </div>
+
+                    <h1 className={styles.title}>{doc.short_title || doc.title_original}</h1>
+
+                    <div className={styles.meta}>
+                        <div className={styles.metaItem}>
+                            📅 {formatDate(doc.date_published)}
                         </div>
-
-                        <h1 className={styles.title}>{doc.title_original}</h1>
-
-                        <div className={styles.meta}>
-                            <time dateTime={doc.date_published} className={styles.metaItem}>
-                                📅 {formatDate(doc.date_published)}
-                            </time>
-                            {doc.approved_by && (
-                                <span className={styles.metaItem}>
-                                    ✍️ {doc.approved_by}
-                                </span>
-                            )}
-                        </div>
-
-                        <div className={styles.impactSection}>
-                            <div className={styles.impactHeader}>
-                                <h3>Nivel de impacto</h3>
-                                <ImpactBadge score={doc.impact_index?.score || 0} />
+                        {doc.approved_by && (
+                            <div className={styles.metaItem}>
+                                ✍️ {doc.approved_by}
                             </div>
-                            <ImpactBar score={doc.impact_index?.score || 0} height={12} />
-                            {doc.impact_index?.reason && (
-                                <p className={styles.impactReason}>{doc.impact_index.reason}</p>
-                            )}
+                        )}
+                        <div className={styles.metaItem}>
+                            ⏱️ {readingTime} min lectura
                         </div>
-                    </header>
+                    </div>
+                </div>
+            </section>
 
-                    {/* Summary */}
+            {/* Main Content Layout */}
+            <div className={styles.container}>
+                {/* Left Column: Content */}
+                <main className={styles.mainContent}>
+                    {/* Impact Section for Mobile (hidden on desktop usually, but we keep it in sidebar for desktop. Let's start with Summary) */}
+
                     <section className={styles.section}>
-                        <h2 className={styles.sectionTitle}>📄 Resumen ciudadano</h2>
+                        <h2 className={styles.sectionTitle}>
+                            📄 Resumen Ciudadano
+                        </h2>
                         <div className={styles.summary}>
                             {doc.summary_plain_es}
                         </div>
                     </section>
 
-                    {/* Quick Overview Cards */}
-                    <section className={styles.section}>
-                        <h2 className={styles.sectionTitle}>⚡ Lo importante de un vistazo</h2>
-                        <div className={styles.cardsGrid}>
-                            {doc.affects_to && doc.affects_to.length > 0 && (
-                                <div className={styles.card}>
-                                    <h3 className={styles.cardTitle}>A quién afecta</h3>
-                                    <div className={styles.affectsChips}>
-                                        {doc.affects_to.map((group) => (
-                                            <span key={group} className={styles.affectChip}>
-                                                {getAffectedLabel(group)}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {doc.approved_by && (
-                                <div className={styles.card}>
-                                    <h3 className={styles.cardTitle}>Quién aprueba</h3>
-                                    <p className={styles.cardText}>{doc.approved_by}</p>
-                                </div>
-                            )}
-
-                            {doc.entry_into_force && (
-                                <div className={styles.card}>
-                                    <h3 className={styles.cardTitle}>Entrada en vigor</h3>
-                                    <p className={styles.cardText}>
-                                        {formatDate(doc.entry_into_force)}
-                                    </p>
-                                </div>
-                            )}
-
-                            {doc.keywords && doc.keywords.length > 0 && (
-                                <div className={styles.card}>
-                                    <h3 className={styles.cardTitle}>Palabras clave</h3>
-                                    <div className={styles.keywords}>
-                                        {doc.keywords.map((keyword) => (
-                                            <span key={keyword} className={styles.keyword}>
-                                                {keyword}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </section>
-
-                    {/* Why you should know */}
                     {doc.transparency_notes && (
                         <section className={styles.section}>
-                            <h2 className={styles.sectionTitle}>💡 Por qué deberías saber esto</h2>
+                            <h2 className={styles.sectionTitle}>💡 Por qué es importante</h2>
                             <div className={styles.transparencyNotes}>
                                 {doc.transparency_notes}
                             </div>
                         </section>
                     )}
 
-                    {/* Changes Summary */}
                     {doc.changes_summary && (
                         <section className={styles.section}>
-                            <h2 className={styles.sectionTitle}>📝 Resumen de cambios</h2>
+                            <h2 className={styles.sectionTitle}>📝 Cambios Clave</h2>
                             <div className={styles.changesSummary}>
                                 {doc.changes_summary}
                             </div>
                         </section>
                     )}
 
-                    {/* Official Data */}
                     <section className={styles.section}>
+                        <h2 className={styles.sectionTitle}>📋 Datos Técnicos</h2>
                         <details className={styles.details}>
                             <summary className={styles.detailsSummary}>
-                                📋 Datos oficiales
+                                Ver ficha oficial completa
                             </summary>
                             <div className={styles.detailsContent}>
                                 <div className={styles.dataGrid}>
                                     <div className={styles.dataItem}>
-                                        <span className={styles.dataLabel}>ID:</span>
+                                        <span className={styles.dataLabel}>Identificador</span>
                                         <span className={styles.dataValue}>{doc.id}</span>
                                     </div>
                                     <div className={styles.dataItem}>
-                                        <span className={styles.dataLabel}>Fuente:</span>
+                                        <span className={styles.dataLabel}>Fuente</span>
                                         <span className={styles.dataValue}>{doc.source}</span>
                                     </div>
-                                    <div className={styles.dataItem}>
-                                        <span className={styles.dataLabel}>Versión:</span>
-                                        <span className={styles.dataValue}>{doc.version}</span>
-                                    </div>
-                                    {doc.section && (
+                                    {doc.url_oficial && (
                                         <div className={styles.dataItem}>
-                                            <span className={styles.dataLabel}>Sección:</span>
-                                            <span className={styles.dataValue}>{doc.section}</span>
+                                            <span className={styles.dataLabel}>Enlace Oficial</span>
+                                            <a href={doc.url_oficial} target="_blank" rel="noopener" className={styles.officialLink}>
+                                                Abrir en BOE ↗
+                                            </a>
                                         </div>
                                     )}
-                                    <div className={styles.dataItem}>
-                                        <span className={styles.dataLabel}>Creado:</span>
-                                        <span className={styles.dataValue}>
-                                            {formatDate(doc.created_at)}
-                                        </span>
-                                    </div>
-                                    {doc.updated_at && (
-                                        <div className={styles.dataItem}>
-                                            <span className={styles.dataLabel}>Actualizado:</span>
-                                            <span className={styles.dataValue}>
-                                                {formatDate(doc.updated_at)}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div className={styles.dataItem}>
-                                        <span className={styles.dataLabel}>URL oficial:</span>
-                                        <a
-                                            href={doc.url_oficial}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={styles.officialLink}
-                                        >
-                                            Ver en BOE →
-                                        </a>
-                                    </div>
                                     {doc.pdf_path && (
                                         <div className={styles.dataItem}>
-                                            <span className={styles.dataLabel}>PDF:</span>
+                                            <span className={styles.dataLabel}>PDF Original</span>
                                             <span className={styles.dataValue}>{doc.pdf_path}</span>
                                         </div>
                                     )}
@@ -221,8 +151,69 @@ export default async function DocDetailPage({ params }: Props) {
                             </div>
                         </details>
                     </section>
-                </article>
+                </main>
+
+                {/* Right Column: Sidebar */}
+                <aside className={styles.sidebar}>
+                    {/* Impact Card */}
+                    <div className={styles.impactCard}>
+                        <div className={styles.impactHeader}>
+                            <h3>Nivel de Impacto</h3>
+                            <ImpactBadge score={doc.impact_index?.score || 0} />
+                        </div>
+                        <ImpactBar score={doc.impact_index?.score || 0} height={8} />
+                        {doc.impact_index?.reason && (
+                            <p className={styles.impactReason}>{doc.impact_index.reason}</p>
+                        )}
+                    </div>
+
+                    {/* Metadata Card */}
+                    <div className={styles.infoCard}>
+                        {doc.entry_into_force && (
+                            <div className={styles.infoGroup}>
+                                <span className={styles.infoLabel}>Entrada en vigor</span>
+                                <div className={styles.infoValue}>{formatDate(doc.entry_into_force)}</div>
+                            </div>
+                        )}
+
+                        {doc.affects_to && doc.affects_to.length > 0 && (
+                            <div className={styles.infoGroup}>
+                                <span className={styles.infoLabel}>Afecta a</span>
+                                <div className={styles.chips}>
+                                    {doc.affects_to.map(g => (
+                                        <span key={g} className={styles.chip}>{getAffectedLabel(g)}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {doc.keywords && doc.keywords.length > 0 && (
+                            <div className={styles.infoGroup}>
+                                <span className={styles.infoLabel}>Temas</span>
+                                <div className={styles.chips}>
+                                    {doc.keywords.slice(0, 8).map(k => (
+                                        <span key={k} className={styles.keywordChip}>{k}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </aside>
             </div>
+
+            {/* Related Laws Section */}
+            {relatedDocs.length > 0 && (
+                <div className={styles.relatedSection}>
+                    <div className={styles.relatedContainer}>
+                        <h2 className={styles.sectionTitle}>🔗 Relacionado</h2>
+                        <div className={styles.relatedGrid}>
+                            {relatedDocs.map(related => (
+                                <DocCard key={related.id} doc={related} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

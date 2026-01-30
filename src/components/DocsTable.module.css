@@ -1,10 +1,16 @@
 .tableContainer {
     width: 100%;
     overflow-x: auto;
-    border-radius: 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+.tableContainer:hover {
+    box-shadow: var(--shadow-xl);
+    border-color: var(--color-primary-light);
 }
 
 .table {
@@ -12,16 +18,16 @@
     border-collapse: collapse;
     min-width: 800px;
     /* Ensure it scrolls on small screens */
-    font-size: 0.95rem;
+    font-size: var(--font-size-sm);
 }
 
 .table th {
-    background: var(--surface-hover);
-    padding: 1rem;
+    background: var(--color-bg-secondary);
+    padding: var(--space-md) var(--space-lg);
     text-align: left;
-    font-weight: 600;
-    color: var(--text-secondary);
-    border-bottom: 2px solid var(--border);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
     white-space: nowrap;
     position: sticky;
     top: 0;
@@ -29,14 +35,14 @@
 }
 
 .table td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-primary);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-light);
+    color: var(--color-text);
     transition: background 0.2s ease;
 }
 
 .row:hover td {
-    background: var(--surface-hover);
+    background: var(--color-bg-tertiary);
 }
 
 .row:last-child td {
@@ -45,14 +51,13 @@
 
 /* Column specific styles */
 .dateCol {
-    width: 120px;
-    color: var(--text-secondary);
-    font-family: var(--font-mono);
+    width: 140px;
+    color: var(--color-text-muted);
     font-size: 0.9em;
 }
 
 .typeCol {
-    width: 140px;
+    width: 160px;
 }
 
 .titleCol {
@@ -60,50 +65,52 @@
 }
 
 .titleLink {
-    color: var(--text-primary);
+    color: var(--color-text);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     display: block;
-    line-height: 1.4;
+    line-height: 1.5;
+    transition: color var(--transition-base);
 }
 
 .titleLink:hover {
-    color: var(--primary);
+    color: var(--color-primary);
 }
 
 .impactCol {
-    width: 120px;
+    width: 140px;
 }
 
 .linkCol {
-    width: 80px;
+    width: 100px;
     text-align: center;
 }
 
 .impactBadge {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
+    padding: 4px 12px;
     border-radius: 999px;
     font-size: 0.85em;
     font-weight: 500;
+    gap: 6px;
 }
 
 .impactHigh {
     background: rgba(220, 38, 38, 0.1);
-    color: var(--error);
+    color: var(--color-error, #dc2626);
     border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .impactMedium {
     background: rgba(234, 179, 8, 0.1);
-    color: var(--warning);
+    color: var(--color-warning, #eab308);
     border: 1px solid rgba(234, 179, 8, 0.2);
 }
 
 .impactLow {
     background: rgba(16, 185, 129, 0.1);
-    color: var(--success);
+    color: var(--color-success, #10b981);
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
@@ -111,26 +118,29 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-secondary);
-    padding: 0.5rem;
-    border-radius: 6px;
+    color: var(--color-text-secondary);
+    padding: 8px;
+    border-radius: var(--radius-full);
     transition: all 0.2s ease;
+    background-color: var(--color-bg-tertiary);
 }
 
 .externalLink:hover {
-    color: var(--primary);
-    background: var(--primary-light);
+    color: var(--color-primary);
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
 }
 
 .typeTag {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
     font-size: 0.85em;
-    background: var(--surface-hover);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
     white-space: nowrap;
+    font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -138,5 +148,6 @@
         border-radius: 0;
         border-right: none;
         border-left: none;
+        box-shadow: none;
     }
 }

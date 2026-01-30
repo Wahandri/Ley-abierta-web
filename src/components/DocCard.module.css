@@ -1,18 +1,20 @@
 .card {
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
     padding: var(--space-lg);
     transition: all var(--transition-base);
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .card:hover {
     border-color: var(--color-primary-light);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl), var(--shadow-color-primary);
+    transform: translateY(-4px);
 }
 
 .header {
@@ -119,22 +121,25 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
-    padding: var(--space-sm) var(--space-lg);
+    padding: var(--space-md) var(--space-xl);
     background-color: var(--color-primary);
     color: white;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     text-decoration: none;
     transition: all var(--transition-base);
     border: none;
     cursor: pointer;
+    margin-top: auto;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
 }
 
 .button:hover {
     background-color: var(--color-primary-dark);
     text-decoration: none;
-    transform: translateX(2px);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
 }
 
 .button:focus-visible {

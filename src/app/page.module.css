@@ -1,6 +1,7 @@
 .explorerPage {
   min-height: 100vh;
   background-color: var(--color-bg);
+  background-image: radial-gradient(circle at top right, var(--color-primary-soft), transparent 40%);
 }
 
 /* Remove container constraint for full width */
@@ -37,6 +38,7 @@
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-secondary) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

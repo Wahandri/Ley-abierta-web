@@ -75,8 +75,12 @@ export async function parseJSONL(filePath: string): Promise<Document[]> {
 }
 
 /**
- * Get the absolute path to the data file
+ * Get the absolute paths to the data files (2024-2026)
  */
-export function getDataFilePath(): string {
-    return path.join(process.cwd(), 'src', 'data', 'master_2025.jsonl');
+export function getDataFilePaths(): string[] {
+    return [
+        path.join(process.cwd(), 'src', 'data', 'master_2026.jsonl'),
+        path.join(process.cwd(), 'src', 'data', 'master_2025.jsonl'),
+        path.join(process.cwd(), 'src', 'data', 'master_2024.jsonl')
+    ];
 }

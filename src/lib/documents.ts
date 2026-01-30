@@ -1,4 +1,4 @@
-import { Document, parseJSONL, getDataFilePath } from './jsonl';
+import { Document, parseJSONL, getDataFilePaths } from './jsonl';
 import { getImpactLevel } from './constants';
 
 // In-memory cache
@@ -12,10 +12,17 @@ async function initializeCache(): Promise<void> {
     if (cacheInitialized) return;
 
     try {
-        const filePath = getDataFilePath();
-        documentsCache = await parseJSONL(filePath);
+        const filePaths = getDataFilePaths();
+        const allDocs: Document[] = [];
+
+        for (const filePath of filePaths) {
+            const docs = await parseJSONL(filePath);
+            allDocs.push(...docs);
+        }
+
+        documentsCache = allDocs;
         cacheInitialized = true;
-        console.log(`✓ Loaded ${documentsCache.length} documents into cache`);
+        console.log(`✓ Loaded ${documentsCache.length} documents into cache from ${filePaths.length} files`);
     } catch (error) {
         console.error('Failed to initialize document cache:', error);
         documentsCache = [];
@@ -195,4 +202,45 @@ export async function getFacets(): Promise<Facets> {
         affects_counts,
         impact_counts
     };
+}
+
+/**
+ * Get related documents based on content similarity
+ */
+export async function getRelatedDocs(currentDoc: Document, limit: number = 3): Promise<Document[]> {
+    await initializeCache();
+    const docs = documentsCache || [];
+
+    // Filter out current doc
+    const candidates = docs.filter(d => d.id !== currentDoc.id);
+
+    // Score candidates
+    const scored = candidates.map(doc => {
+        let score = 0;
+
+        // Same topic: +3
+        if (doc.topic_primary === currentDoc.topic_primary) score += 3;
+
+        // Matching affects_to: +2 per match
+        if (doc.affects_to && currentDoc.affects_to) {
+            const intersection = doc.affects_to.filter(a => currentDoc.affects_to?.includes(a));
+            score += intersection.length * 2;
+        }
+
+        // Matching keywords: +1 per match
+        if (doc.keywords && currentDoc.keywords) {
+            const intersection = doc.keywords.filter(k => currentDoc.keywords.includes(k));
+            score += intersection.length;
+        }
+
+        return { doc, score };
+    });
+
+    // Sort by score desc, then date desc
+    scored.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return new Date(b.doc.date_published).getTime() - new Date(a.doc.date_published).getTime();
+    });
+
+    return scored.slice(0, limit).map(s => s.doc);
 }

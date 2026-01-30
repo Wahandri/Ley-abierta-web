@@ -19,13 +19,14 @@
 }
 
 .panel {
-    background-color: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-xl);
     padding: var(--space-lg);
     height: fit-content;
     position: sticky;
     top: calc(var(--space-xl) + 60px);
+    box-shadow: var(--shadow-sm);
 }
 
 .header {
@@ -39,6 +40,7 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
     margin: 0;
+    color: var(--color-text);
 }
 
 .closeButton {
@@ -74,6 +76,7 @@
 
 .clearButton:hover {
     background-color: var(--color-bg-tertiary);
+    border-color: var(--color-border-dark);
 }
 
 .section {
@@ -87,7 +90,7 @@
 .sectionTitle {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text);
+    color: var(--color-text-secondary);
     margin-bottom: var(--space-md);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -116,6 +119,7 @@
 
 .filterButton:hover {
     background-color: var(--color-bg-secondary);
+    border-color: var(--color-border-dark);
 }
 
 .filterButton.active {
@@ -139,6 +143,7 @@
     color: var(--color-text);
     cursor: pointer;
     font-family: inherit;
+    transition: all var(--transition-base);
 }
 
 .select:focus {
@@ -167,6 +172,8 @@
         border: none;
         border-left: 1px solid var(--color-border);
         overflow-y: auto;
+        box-shadow: var(--shadow-xl);
+        background-color: var(--color-bg);
     }
 
     .panelOpen {

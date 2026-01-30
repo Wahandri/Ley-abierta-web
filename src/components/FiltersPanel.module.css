@@ -123,9 +123,9 @@
 }
 
 .filterButton.active {
-    background-color: var(--color-primary);
+    background-color: var(--color-accent);
     color: white;
-    border-color: var(--color-primary);
+    border-color: var(--color-accent);
 }
 
 .count {
@@ -148,8 +148,8 @@
 
 .select:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(155, 195, 176, 0.25);
 }
 
 .overlay {

@@ -30,6 +30,17 @@
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
     color: var(--color-primary);
+    position: relative;
+}
+
+.logoMain::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 3px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+    margin-top: var(--space-2xs);
 }
 
 .logoSub {
@@ -79,13 +90,13 @@
     left: 0;
     right: 0;
     height: 2px;
-    background-color: var(--color-primary);
+    background-color: var(--color-accent);
     transform: scaleX(0);
     transition: transform var(--transition-base);
 }
 
 .navLink:hover {
-    color: var(--color-primary);
+    color: var(--color-accent);
     text-decoration: none;
 }
 

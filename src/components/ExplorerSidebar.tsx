@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './ExplorerSidebar.module.css';
-import { TOPICS, AFFECTED_GROUPS, IMPACT_LEVELS } from '@/lib/constants';
+import { TOPICS, AFFECTED_GROUPS, IMPACT_LEVELS, formatDate } from '@/lib/constants';
 
 interface ExplorerSidebarProps {
     facets?: {
@@ -168,10 +168,15 @@ export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = fal
                     </button>
                 </div>
 
-                {/* Results counter */}
-                <div className={styles.resultsCounter}>
-                    <span className={styles.resultsCount}>{totalResults.toLocaleString()}</span>
-                    <span className={styles.resultsLabel}> documento{totalResults !== 1 ? 's' : ''}</span>
+                {/* Green Box: Results & Date */}
+                <div className={styles.greenBox}>
+                    <h3 className={styles.greenBoxTitle}>Documentos legislativos</h3>
+                    <div className={styles.greenBoxCount}>
+                        {totalResults.toLocaleString()} <span className={styles.greenBoxLabel}>resultados</span>
+                    </div>
+                    <div className={styles.greenBoxDate}>
+                        {currentFrom ? formatDate(currentFrom) : 'Ene 2024'} - {currentTo ? formatDate(currentTo) : 'Dic 2025'}
+                    </div>
                 </div>
 
                 {/* Search */}
@@ -222,60 +227,74 @@ export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = fal
                     </div>
                 </div>
 
-                {/* Topic */}
+                {/* Topic Accordion */}
                 <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>Tema</h3>
-                    <div className={styles.scrollableList}>
-                        <label className={styles.radioLabel}>
-                            <input
-                                type="radio"
-                                name="topic"
-                                value=""
-                                checked={!currentTopic}
-                                onChange={() => handleTopicChange('')}
-                            />
-                            <span className={styles.labelText}>Todos los temas</span>
-                        </label>
-                        {Object.entries(TOPICS).map(([key, label]) => (
-                            <label key={key} className={styles.radioLabel}>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            Tema
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            <label className={styles.radioLabel}>
                                 <input
                                     type="radio"
                                     name="topic"
-                                    value={key}
-                                    checked={currentTopic === key}
-                                    onChange={() => handleTopicChange(key)}
+                                    value=""
+                                    checked={!currentTopic}
+                                    onChange={() => handleTopicChange('')}
                                 />
-                                <span className={styles.labelText}>
-                                    {label}
-                                    {facets?.topic_counts?.[key] !== undefined && (
-                                        <span className={styles.count}>({facets.topic_counts[key]})</span>
-                                    )}
-                                </span>
+                                <span className={styles.labelText}>Todos los temas</span>
                             </label>
-                        ))}
-                    </div>
+                            {Object.entries(TOPICS).map(([key, label]) => (
+                                <label key={key} className={styles.radioLabel}>
+                                    <input
+                                        type="radio"
+                                        name="topic"
+                                        value={key}
+                                        checked={currentTopic === key}
+                                        onChange={() => handleTopicChange(key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {label}
+                                        {facets?.topic_counts?.[key] !== undefined && (
+                                            <span className={styles.count}>({facets.topic_counts[key]})</span>
+                                        )}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
                 </div>
 
-                {/* Affects */}
+                {/* Affects Accordion */}
                 <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>A quién afecta</h3>
-                    <div className={styles.scrollableList}>
-                        {Object.entries(AFFECTED_GROUPS).map(([key, label]) => (
-                            <label key={key} className={styles.checkboxLabel}>
-                                <input
-                                    type="checkbox"
-                                    checked={currentAffects.includes(key)}
-                                    onChange={() => handleAffectsToggle(key)}
-                                />
-                                <span className={styles.labelText}>
-                                    {label}
-                                    {facets?.affects_counts?.[key] !== undefined && (
-                                        <span className={styles.count}>({facets.affects_counts[key]})</span>
-                                    )}
-                                </span>
-                            </label>
-                        ))}
-                    </div>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            A quién afecta
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            {Object.entries(AFFECTED_GROUPS).map(([key, label]) => (
+                                <label key={key} className={styles.checkboxLabel}>
+                                    <input
+                                        type="checkbox"
+                                        checked={currentAffects.includes(key)}
+                                        onChange={() => handleAffectsToggle(key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {label}
+                                        {facets?.affects_counts?.[key] !== undefined && (
+                                            <span className={styles.count}>({facets.affects_counts[key]})</span>
+                                        )}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
                 </div>
 
                 {/* Date range */}

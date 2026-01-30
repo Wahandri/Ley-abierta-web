@@ -123,12 +123,11 @@ function DocsContent() {
                 <p className={styles.introText}>
                     Todas las leyes y sus documentos oficiales.
                 </p>
-                <SearchBar />
             </div>
 
             <div className={styles.layout}>
                 <aside className={styles.sidebar}>
-                    <FiltersPanel facets={facets} />
+                    <FiltersPanel facets={facets} totalResults={totalResults} />
                 </aside>
 
                 <div className={styles.main}>

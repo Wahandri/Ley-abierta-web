@@ -5,15 +5,19 @@ import { useState, useEffect } from 'react';
 import styles from './FiltersPanel.module.css';
 import { TOPICS, AFFECTED_GROUPS, IMPACT_LEVELS } from '@/lib/constants';
 
+import SearchBar from './SearchBar';
+import { formatDate } from '@/lib/constants';
+
 interface FiltersPanelProps {
     facets?: {
         topic_counts?: Record<string, number>;
         affects_counts?: Record<string, number>;
         impact_counts?: Record<string, number>;
     };
+    totalResults?: number;
 }
 
-export default function FiltersPanel({ facets }: FiltersPanelProps) {
+export default function FiltersPanel({ facets, totalResults = 0 }: FiltersPanelProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +79,23 @@ export default function FiltersPanel({ facets }: FiltersPanelProps) {
                     </button>
                 )}
 
+                {/* Green Box */}
+                <div className={styles.greenBox}>
+                    <h3 className={styles.greenBoxTitle}>Documentos legislativos</h3>
+                    <div className={styles.greenBoxCount}>
+                        {totalResults.toLocaleString()} <span className={styles.greenBoxLabel}>resultados</span>
+                    </div>
+                    <div className={styles.greenBoxDate}>
+                        2024 - 2025
+                    </div>
+                </div>
+
+                {/* Search Bar */}
+                <div className={styles.section}>
+                    <SearchBar />
+                </div>
+
+                {/* Impact */}
                 <div className={styles.section}>
                     <h4 className={styles.sectionTitle}>Impacto</h4>
                     <div className={styles.buttonGroup}>
@@ -93,36 +114,87 @@ export default function FiltersPanel({ facets }: FiltersPanelProps) {
                     </div>
                 </div>
 
+                {/* Topic Accordion */}
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>Tema</h4>
-                    <select
-                        className={styles.select}
-                        value={topic}
-                        onChange={(e) => updateFilter('topic', e.target.value)}
-                    >
-                        <option value="">Todos los temas</option>
-                        {Object.entries(TOPICS).map(([key, label]) => (
-                            <option key={key} value={key}>
-                                {label} {facets?.topic_counts?.[key] ? `(${facets.topic_counts[key]})` : ''}
-                            </option>
-                        ))}
-                    </select>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            Tema
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="topic"
+                                    checked={!topic}
+                                    onChange={() => updateFilter('topic', '')}
+                                />
+                                <span className={styles.labelText}>Todos los temas</span>
+                            </label>
+                            {Object.entries(TOPICS).map(([key, label]) => (
+                                <label key={key} className={styles.radioLabel}>
+                                    <input
+                                        type="radio"
+                                        name="topic"
+                                        checked={topic === key}
+                                        onChange={() => updateFilter('topic', key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {label} {facets?.topic_counts?.[key] ? `(${facets.topic_counts[key]})` : ''}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
                 </div>
 
+                {/* Affects Accordion */}
                 <div className={styles.section}>
-                    <h4 className={styles.sectionTitle}>A quién afecta</h4>
-                    <select
-                        className={styles.select}
-                        value={affects}
-                        onChange={(e) => updateFilter('affects', e.target.value)}
-                    >
-                        <option value="">Todos</option>
-                        {Object.entries(AFFECTED_GROUPS).map(([key, label]) => (
-                            <option key={key} value={key}>
-                                {label} {facets?.affects_counts?.[key] ? `(${facets.affects_counts[key]})` : ''}
-                            </option>
-                        ))}
-                    </select>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            A quién afecta
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    checked={!affects}
+                                    onChange={() => updateFilter('affects', '')}
+                                />
+                                <span className={styles.labelText}>Todos</span>
+                            </label>
+                            {/* Note: Original filters allowed single selection for affects via Select. 
+                                Converting to Checkbox logic for consistency, but the updateFilter uses simple replacement. 
+                                We'll keep single select behavior (radio-like) but styled as items for now to match logic, 
+                                or implementing multi-select would require logic change.
+                                DocsPage logic handles single 'affects' param?
+                                Step 12: `updateFilter('affects', e.target.value)` -> replaces.
+                                So I'll stick to replacement (Radio behavior) for now to minimize logic breakage, 
+                                OR update logic to allow multiple? URL supports comma?
+                                ExplorerSidebar supports comma `currentAffects.includes`.
+                                FiltersPanel currently supports `affects` string.
+                                I'll stick to Radio behavior for `FiltersPanel` for safety, represented as Radio inputs.
+                            */}
+                            {Object.entries(AFFECTED_GROUPS).map(([key, label]) => (
+                                <label key={key} className={styles.radioLabel}>
+                                    <input
+                                        type="radio"
+                                        name="affects"
+                                        checked={affects === key}
+                                        onChange={() => updateFilter('affects', key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {label} {facets?.affects_counts?.[key] ? `(${facets.affects_counts[key]})` : ''}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
                 </div>
             </aside>
 

@@ -35,21 +35,44 @@
     padding: var(--space-xs);
 }
 
-/* Results Info - Clean */
-.resultsCounter {
-    padding: 0 var(--space-xl);
-    margin-bottom: var(--space-2xl);
-    font-family: var(--font-family-serif);
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-base);
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: var(--space-md);
+/* Green Box Results */
+.greenBox {
+    background-color: var(--color-accent);
+    color: white;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin: 0 var(--space-xl) var(--space-2xl);
+    box-shadow: var(--shadow-md);
 }
 
-.resultsCount {
+.greenBoxTitle {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+    margin-bottom: var(--space-xs);
+    color: white;
+}
+
+.greenBoxCount {
+    font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    font-size: var(--font-size-xl);
+    line-height: 1;
+    margin-bottom: var(--space-2xs);
+}
+
+.greenBoxLabel {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    opacity: 0.9;
+}
+
+.greenBoxDate {
+    font-size: var(--font-size-xs);
+    opacity: 0.8;
+    margin-top: var(--space-xs);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: var(--space-xs);
 }
 
 /* Base Section Styling */
@@ -183,15 +206,65 @@
     border-radius: var(--radius-full);
 }
 
-/* Scrollable Filters (Theme/Affects) */
-.scrollableList {
-    max-height: 200px;
-    /* Reduced to encourage proper scrolling */
-    overflow-y: auto;
-    padding-right: var(--space-xs);
+/* Accordions */
+.accordion {
+    border-bottom: 1px solid var(--color-border-light);
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-md);
 }
 
-/* Custom Scrollbar for list */
+.accordionSummary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: var(--space-xs) 0;
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0;
+    /* Override sectionTitle margin if reused */
+}
+
+.accordionSummary::-webkit-details-marker {
+    display: none;
+}
+
+.accordionIcon {
+    color: var(--color-text-muted);
+    transition: transform var(--transition-base);
+}
+
+.accordion[open] .accordionIcon {
+    transform: rotate(180deg);
+}
+
+.sectionTitle {
+    /* Keeping this for sections that are NOT accordions (like Search/Impact/Date) */
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-md);
+    display: block;
+}
+
+/* Scrollable Filters (Theme/Affects) */
+.scrollableList {
+    max-height: 300px;
+    /* Increased slightly as requested "alargar la sidebar" */
+    overflow-y: auto;
+    padding-right: var(--space-xs);
+    margin-top: var(--space-sm);
+    /* Animation for expanding? details/summary doesn't animate height easily without JS or grid tricks. 
+       We'll keep it simple for now as requested "moderno" but accordions are native. */
+}
+
 .scrollableList::-webkit-scrollbar {
     width: 4px;
 }

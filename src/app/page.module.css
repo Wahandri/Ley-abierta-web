@@ -1,91 +1,107 @@
 .explorerPage {
   min-height: 100vh;
-  background-color: var(--color-bg);
-  background-image: radial-gradient(circle at top right, var(--color-primary-soft), transparent 40%);
+  background-color: var(--color-bg-alt);
 }
 
-/* Remove container constraint for full width */
 .explorerLayout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  /* Fixed sidebar width + fluid content */
+  display: flex;
+  /* Flex is often easier than Grid for simple 2-col sidebar layouts */
   min-height: 100vh;
-  align-items: start;
+  max-width: 1600px;
+  /* Prevent it from getting too wide on ultra-wide screens */
+  margin: 0 auto;
 }
 
 .sidebarContainer {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  height: 100vh;
   position: sticky;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  overflow-y: hidden;
+  /* Sidebar component handles its own scroll internally */
   border-right: 1px solid var(--color-border);
   background-color: var(--color-bg);
-  z-index: 10;
+  z-index: 20;
 }
 
 .mainContent {
-  padding: 2rem;
-  width: 100%;
+  flex-grow: 1;
+  padding: var(--space-xl);
+  min-width: 0;
+  /* Prevents flex child from overflowing */
 }
 
+/* Header within main content */
 .header {
-  margin-bottom: 2rem;
-  text-align: center;
+  margin-bottom: var(--space-2xl);
+  max-width: 800px;
 }
 
 .title {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-text-secondary) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-size: var(--font-size-3xl);
+  font-family: var(--font-family-serif);
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   color: var(--color-text-secondary);
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  max-width: 60ch;
 }
 
 .mobileFilterToggle {
   display: none;
-  /* Hidden by default on desktop */
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .explorerLayout {
-    display: block;
-    /* Stack on smaller screens */
-  }
-
   .sidebarContainer {
     display: none;
-    /* Hide sidebar, use drawer instead */
+    /* Replaced by Drawer */
+  }
+
+  .mainContent {
+    padding: var(--space-lg);
+  }
+
+  .title {
+    font-size: var(--font-size-2xl);
   }
 
   .mobileFilterToggle {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     position: fixed;
     bottom: 2rem;
     right: 2rem;
+    z-index: 100;
+
     background-color: var(--color-primary);
     color: white;
-    padding: 0.75rem 1.25rem;
-    border-radius: 9999px;
-    box-shadow: var(--shadow-lg);
-    z-index: 50;
-    font-weight: 500;
+
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-float);
+
+    font-weight: var(--font-weight-medium);
+    transition: transform var(--transition-base);
+  }
+
+  .mobileFilterToggle:active {
+    transform: scale(0.95);
   }
 
   .filterBadge {
     background: white;
     color: var(--color-primary);
     font-size: 0.75rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 999px;
-    margin-left: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: 0.5rem;
+    font-weight: bold;
   }
 }

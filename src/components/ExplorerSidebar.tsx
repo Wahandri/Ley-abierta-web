@@ -227,6 +227,31 @@ export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = fal
                     </div>
                 </div>
 
+                {/* Date range */}
+                <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Fecha de publicación</h3>
+                    <div className={styles.dateRange}>
+                        <label className={styles.dateLabel}>
+                            <span className={styles.dateLabelText}>Desde</span>
+                            <input
+                                type="date"
+                                className={styles.dateInput}
+                                value={currentFrom}
+                                onChange={(e) => updateURL({ from: e.target.value || undefined })}
+                            />
+                        </label>
+                        <label className={styles.dateLabel}>
+                            <span className={styles.dateLabelText}>Hasta</span>
+                            <input
+                                type="date"
+                                className={styles.dateInput}
+                                value={currentTo}
+                                onChange={(e) => updateURL({ to: e.target.value || undefined })}
+                            />
+                        </label>
+                    </div>
+                </div>
+
                 {/* Topic Accordion */}
                 <div className={styles.section}>
                     <details className={styles.accordion} open>
@@ -295,44 +320,6 @@ export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = fal
                             ))}
                         </div>
                     </details>
-                </div>
-
-                {/* Date range */}
-                <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>Fecha de publicación</h3>
-                    <div className={styles.dateRange}>
-                        <label className={styles.dateLabel}>
-                            <span className={styles.dateLabelText}>Desde</span>
-                            <input
-                                type="date"
-                                className={styles.dateInput}
-                                value={currentFrom}
-                                onChange={(e) => updateURL({ from: e.target.value || undefined })}
-                            />
-                        </label>
-                        <label className={styles.dateLabel}>
-                            <span className={styles.dateLabelText}>Hasta</span>
-                            <input
-                                type="date"
-                                className={styles.dateInput}
-                                value={currentTo}
-                                onChange={(e) => updateURL({ to: e.target.value || undefined })}
-                            />
-                        </label>
-                    </div>
-                </div>
-
-                {/* Sort */}
-                <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>Ordenar por</h3>
-                    <select
-                        className={styles.select}
-                        value={currentSort}
-                        onChange={(e) => updateURL({ sortBy: e.target.value })}
-                    >
-                        <option value="date">Fecha (más reciente)</option>
-                        <option value="impact">Impacto (mayor)</option>
-                    </select>
                 </div>
             </aside>
         </>

@@ -6,7 +6,6 @@ import styles from './ExplorerResults.module.css';
 import DocCard from './DocCard';
 import Skeleton from './Skeleton';
 import EmptyState from './EmptyState';
-import SortControl from './SortControl';
 import { Document } from '@/lib/jsonl';
 
 interface QueryResult {
@@ -127,7 +126,6 @@ export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate }: Explo
                     <p className={styles.resultsInfo}>
                         Mostrando <strong>{docs.length}</strong> de <strong>{totalResults.toLocaleString()}</strong> documento{totalResults !== 1 ? 's' : ''}
                     </p>
-                    <SortControl />
                 </div>
             )}
 

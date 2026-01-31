@@ -1,8 +1,8 @@
 .card {
     background-color: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    border: 2px solid var(--color-accent);
+    /* Thicker border, color always visible */
     border-radius: var(--radius-lg);
-    /* Slightly less rounded than before for seriousness */
     padding: var(--space-lg);
     transition: all var(--transition-base);
     display: flex;
@@ -10,12 +10,19 @@
     height: 100%;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-hover);
+    /* Shadow always visible */
+    cursor: pointer;
+    text-decoration: none;
+    /* For Link wrapper */
+    color: inherit;
+    /* Inherit text color */
 }
 
 .card:hover {
-    border-color: var(--color-accent);
-    box-shadow: var(--shadow-hover);
     transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    /* Stronger shadow on hover */
 }
 
 /* Header: Date + Badges */
@@ -76,6 +83,7 @@
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-decoration: none;
 }
 
 /* Impact Section - Clean visuals */
@@ -147,42 +155,6 @@
     overflow: hidden;
 }
 
-/* Call to Action */
-.button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    background-color: transparent;
-    color: var(--color-text-secondary);
-    /* Default generic link color */
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    text-decoration: none;
-    transition: all var(--transition-base);
-    margin-top: auto;
-}
-
-.button:hover {
-    background-color: var(--color-accent);
-    /* Green Hover */
-    color: white;
-    /* White Text */
-    border-color: var(--color-accent);
-    text-decoration: none;
-    box-shadow: 0 4px 10px rgba(155, 195, 176, 0.4);
-}
-
-.arrow {
-    transition: transform var(--transition-base);
-}
-
-.button:hover .arrow {
-    transform: translateX(4px);
-}
 
 @media (max-width: 768px) {
     .title {

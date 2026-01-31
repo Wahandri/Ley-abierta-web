@@ -14,7 +14,7 @@ export default function DocCard({ doc }: DocCardProps) {
     const remainingAffects = (doc.affects_to?.length || 0) - affectsToDisplay.length;
 
     return (
-        <article className={styles.card}>
+        <Link href={`/docs/${doc.id}`} className={styles.card}>
             <div className={styles.header}>
                 <time className={styles.date} dateTime={doc.date_published}>
                     {formatDate(doc.date_published)}
@@ -60,11 +60,6 @@ export default function DocCard({ doc }: DocCardProps) {
             <p className={styles.summary}>
                 {truncate(doc.summary_plain_es, 160)}
             </p>
-
-            <Link href={`/docs/${doc.id}`} className={styles.button}>
-                Entender esto
-                <span className={styles.arrow}>→</span>
-            </Link>
-        </article>
+        </Link>
     );
 }

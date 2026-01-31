@@ -5,6 +5,9 @@ export default function ComoFuncionaPage() {
         <div className={styles.page}>
             <div className={styles.content}>
                 <header className={styles.header}>
+                    <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
+                        <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '120px', height: 'auto' }} />
+                    </div>
                     <h1 className={styles.title}>Cómo funciona Ley Abierta</h1>
                     <p className={styles.subtitle}>
                         Un espacio para entender lo que se aprueba en el BOE con lenguaje claro, filtros útiles y una

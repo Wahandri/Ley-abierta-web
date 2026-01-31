@@ -6,6 +6,9 @@ export default function Footer() {
             <div className={`container ${styles.container}`}>
                 <div className={styles.content}>
                     <div className={styles.brand}>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '60px', height: 'auto' }} />
+                        </div>
                         <h3 className={styles.title}>Ley Abierta / El Vigilante</h3>
                         <p className={styles.tagline}>
                             Leyes y documentos públicos explicados en lenguaje claro

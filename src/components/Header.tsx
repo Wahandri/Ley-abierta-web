@@ -16,9 +16,7 @@ export default function Header() {
         <header className={styles.header}>
             <div className={`container ${styles.container}`}>
                 <Link href="/" className={styles.logo}>
-                    <div style={{ position: 'relative', width: '40px', height: '40px' }}>
-                        <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    </div>
+                    <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 </Link>
 
                 <button

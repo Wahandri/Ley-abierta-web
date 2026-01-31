@@ -6,7 +6,7 @@ export default function ComoFuncionaPage() {
             <div className={styles.content}>
                 <header className={styles.header}>
                     <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
-                        <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '120px', height: 'auto' }} />
+                        <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '400px', height: 'auto' }} />
                     </div>
                     <h1 className={styles.title}>Cómo funciona Ley Abierta</h1>
                     <p className={styles.subtitle}>

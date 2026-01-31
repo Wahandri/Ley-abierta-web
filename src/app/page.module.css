@@ -60,8 +60,13 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .sidebarContainer {
-    display: none;
-    /* Replaced by Drawer */
+    width: 0;
+    flex-basis: 0;
+    flex-shrink: 1;
+    border-right: none;
+    background: transparent;
+    height: 0;
+    overflow: visible;
   }
 
   .mainContent {

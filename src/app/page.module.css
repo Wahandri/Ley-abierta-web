@@ -1,6 +1,6 @@
 .explorerPage {
-    min-height: 100vh;
-    background-color: var(--color-bg);
+  min-height: 100vh;
+  background-color: var(--color-bg);
 }
 
 .explorerLayout {
@@ -18,7 +18,7 @@
   height: 100vh;
   position: sticky;
   top: 0;
-  overflow-y: hidden;
+  overflow-y: auto;
   /* Sidebar component handles its own scroll internally */
   border-right: 1px solid var(--color-border);
   background-color: var(--color-bg-secondary);

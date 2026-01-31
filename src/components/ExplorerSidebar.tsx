@@ -175,7 +175,7 @@ export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = fal
                         {totalResults.toLocaleString()} <span className={styles.greenBoxLabel}>resultados</span>
                     </div>
                     <div className={styles.greenBoxDate}>
-                        {currentFrom ? formatDate(currentFrom) : 'Ene 2024'} - {currentTo ? formatDate(currentTo) : 'Dic 2025'}
+                        {currentFrom ? formatDate(currentFrom) : 'Ene 2020'} - {currentTo ? formatDate(currentTo) : 'Ene 2026'}
                     </div>
                 </div>
 

@@ -75,12 +75,28 @@ export async function parseJSONL(filePath: string): Promise<Document[]> {
 }
 
 /**
- * Get the absolute paths to the data files (2024-2026)
+ * Get the absolute paths to the data files (all master_*.jsonl files in src/data)
  */
 export function getDataFilePaths(): string[] {
-    return [
-        path.join(process.cwd(), 'src', 'data', 'master_2026.jsonl'),
-        path.join(process.cwd(), 'src', 'data', 'master_2025.jsonl'),
-        path.join(process.cwd(), 'src', 'data', 'master_2024.jsonl')
-    ];
+    const dataDir = path.join(process.cwd(), 'src', 'data');
+
+    // Check if directory exists
+    if (!fs.existsSync(dataDir)) {
+        console.warn('Data directory not found:', dataDir);
+        return [];
+    }
+
+    try {
+        const files = fs.readdirSync(dataDir);
+        const jsonlFiles = files
+            .filter(file => /^master_\d{4}\.jsonl$/.test(file))
+            .map(file => path.join(dataDir, file));
+
+        // Sort files to ensure deterministic loading order (e.g. descending by year if possible, but path sort is fine)
+        // Reverse sort usually puts higher numbers (years) first which might be slightly better for "newest first" logic implicit in some array ops
+        return jsonlFiles.sort().reverse();
+    } catch (error) {
+        console.error('Error reading data directory:', error);
+        return [];
+    }
 }

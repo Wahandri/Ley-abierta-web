@@ -5,6 +5,7 @@
     flex-direction: column;
     padding: var(--space-xl) 0;
     /* Vertical padding only, internal container handles horizontal */
+    padding-bottom: 100px;
 }
 
 /* Header */

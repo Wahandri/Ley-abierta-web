@@ -1,0 +1,412 @@
+/* Sidebar Logic - Sticky/Scroll handled by container, this is just content layout */
+.sidebar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-xl) 0;
+    /* Vertical padding only, internal container handles horizontal */
+    padding-bottom: 100px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+.title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.closeButton {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: var(--font-size-2xl);
+    cursor: pointer;
+    padding: var(--space-xs);
+}
+
+/* Green Box Results */
+.greenBox {
+    background-color: var(--color-accent);
+    color: white;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    margin: 0 var(--space-xl) var(--space-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.greenBoxTitle {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+    margin-bottom: var(--space-xs);
+    color: white;
+}
+
+.greenBoxCount {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    margin-bottom: var(--space-2xs);
+}
+
+.greenBoxLabel {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    opacity: 0.9;
+}
+
+.greenBoxDate {
+    font-size: var(--font-size-xs);
+    opacity: 0.8;
+    margin-top: var(--space-xs);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: var(--space-xs);
+}
+
+/* Base Section Styling */
+.section {
+    padding: 0 var(--space-xl);
+    margin-bottom: var(--space-2xl);
+}
+
+.sectionTitle {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-md);
+    display: block;
+}
+
+/* Search Input - Clean & Minimal */
+.searchInput {
+    width: 100%;
+    padding: var(--space-md);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg-alt);
+    color: var(--color-text);
+    font-family: inherit;
+    transition: all var(--transition-fast);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    background-color: var(--color-bg);
+    box-shadow: 0 0 0 4px rgba(155, 195, 176, 0.25);
+}
+
+.searchInput::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* Clear Filters */
+.clearButton {
+    margin: 0 var(--space-xl) var(--space-xl);
+    width: calc(100% - (var(--space-xl) * 2));
+    padding: var(--space-xs) 0;
+    color: var(--color-accent);
+    background: none;
+    border: none;
+    border-bottom: 1px dashed var(--color-accent);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    text-align: left;
+    transition: all var(--transition-fast);
+}
+
+.clearButton:hover {
+    color: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+}
+
+/* Impact Buttons - Visual Indicators */
+.impactGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.impactButton {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--space-sm);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: left;
+}
+
+.impactButton:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+.impactButton.active {
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-border-dark);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Impact Indicators */
+.impactButton::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: var(--space-md);
+    flex-shrink: 0;
+}
+
+.impactButton[data-impact="low"]::before {
+    background-color: var(--color-impact-low);
+}
+
+.impactButton[data-impact="mid"]::before {
+    background-color: var(--color-impact-mid);
+}
+
+.impactButton[data-impact="high"]::before {
+    background-color: var(--color-impact-high);
+}
+
+.impactLabel {
+    flex: 1;
+    color: var(--color-text);
+}
+
+.impactButton.active .impactLabel {
+    color: var(--color-text);
+    font-weight: var(--font-weight-bold);
+}
+
+.count {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    background: var(--color-bg-alt);
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+}
+
+/* Accordions */
+.accordion {
+    border-bottom: 1px solid var(--color-border-light);
+    padding-bottom: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.accordionSummary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: var(--space-xs) 0;
+
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0;
+    /* Override sectionTitle margin if reused */
+}
+
+.accordionSummary::-webkit-details-marker {
+    display: none;
+}
+
+.accordionIcon {
+    color: var(--color-text-muted);
+    transition: transform var(--transition-base);
+}
+
+.accordion[open] .accordionIcon {
+    transform: rotate(180deg);
+}
+
+.sectionTitle {
+    /* Keeping this for sections that are NOT accordions (like Search/Impact/Date) */
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-md);
+    display: block;
+}
+
+/* Scrollable Filters (Theme/Affects) */
+.scrollableList {
+    max-height: 300px;
+    /* Increased slightly as requested "alargar la sidebar" */
+    overflow-y: auto;
+    padding-right: var(--space-xs);
+    margin-top: var(--space-sm);
+    /* Animation for expanding? details/summary doesn't animate height easily without JS or grid tricks. 
+       We'll keep it simple for now as requested "moderno" but accordions are native. */
+}
+
+.scrollableList::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollableList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollableList::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+}
+
+.radioLabel,
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    padding: var(--space-xs) 0;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.radioLabel:hover,
+.checkboxLabel:hover {
+    color: var(--color-text);
+}
+
+.radioLabel input,
+.checkboxLabel input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--color-border-dark);
+    margin-right: var(--space-sm);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Radio Specific */
+.radioLabel input {
+    border-radius: 50%;
+}
+
+.radioLabel input:checked {
+    border-color: var(--color-accent);
+    border-width: 5px;
+    /* Creates the dot effect */
+}
+
+/* Checkbox Specific */
+.checkboxLabel input {
+    border-radius: var(--radius-sm);
+}
+
+.checkboxLabel input:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='12px' height='12px'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.labelText {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Date Range */
+.dateRange {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+}
+
+.dateLabelText {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-xs);
+}
+
+.dateInput {
+    width: 100%;
+    padding: var(--space-sm);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    background: white;
+}
+
+/* Mobile Drawer Logic */
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(90vw, 320px);
+        background: var(--color-bg);
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform var(--transition-base);
+        box-shadow: var(--shadow-float);
+        border-right: none;
+        overflow-y: auto;
+        padding-top: var(--space-lg);
+    }
+
+    .sidebarOpen {
+        transform: translateX(0);
+    }
+
+    .closeButton {
+        display: block;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 999;
+        animation: fadeIn 0.2s ease-out;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

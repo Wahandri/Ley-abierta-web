@@ -1,0 +1,112 @@
+.explorerPage {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.explorerLayout {
+  display: flex;
+  /* Flex is often easier than Grid for simple 2-col sidebar layouts */
+  min-height: 100vh;
+  max-width: 1600px;
+  /* Prevent it from getting too wide on ultra-wide screens */
+  margin: 0 auto;
+}
+
+.sidebarContainer {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  /* Sidebar component handles its own scroll internally */
+  border-right: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+  z-index: 20;
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: var(--space-xl);
+  min-width: 0;
+  /* Prevents flex child from overflowing */
+}
+
+/* Header within main content */
+.header {
+  margin-bottom: var(--space-2xl);
+  max-width: 800px;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-family: var(--font-family-serif);
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  max-width: 60ch;
+}
+
+.mobileFilterToggle {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebarContainer {
+    width: 0;
+    flex-basis: 0;
+    flex-shrink: 1;
+    border-right: none;
+    background: transparent;
+    height: 0;
+    overflow: visible;
+  }
+
+  .mainContent {
+    padding: var(--space-lg);
+  }
+
+  .title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .mobileFilterToggle {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+
+    background-color: var(--color-accent);
+    color: white;
+
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-float);
+
+    font-weight: var(--font-weight-medium);
+    transition: transform var(--transition-base);
+  }
+
+  .mobileFilterToggle:active {
+    transform: scale(0.95);
+  }
+
+  .filterBadge {
+    background: white;
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    margin-left: 0.5rem;
+    font-weight: bold;
+  }
+}

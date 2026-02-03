@@ -1,0 +1,36 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+}
+
+.score {
+    font-weight: var(--font-weight-normal);
+    margin-left: var(--space-2xs);
+    opacity: 0.8;
+}
+
+.low {
+    background-color: var(--color-impact-low);
+    color: var(--color-primary-dark);
+    /* Text needs contrast on low opacity bg */
+    border: 1px solid transparent;
+}
+
+.mid {
+    background-color: var(--color-impact-mid);
+    color: var(--color-primary-dark);
+    border: 1px solid transparent;
+}
+
+.high {
+    background-color: var(--color-impact-high);
+    color: white;
+    border: 1px solid transparent;
+}

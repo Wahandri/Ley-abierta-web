@@ -1,0 +1,24 @@
+.container {
+    width: 100%;
+    background-color: var(--color-bg-alt);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width var(--transition-slow);
+}
+
+.low {
+    background-color: var(--color-impact-low);
+}
+
+.mid {
+    background-color: var(--color-impact-mid);
+}
+
+.high {
+    background-color: var(--color-impact-high);
+}

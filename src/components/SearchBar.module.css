@@ -1,43 +1,113 @@
 .searchBar {
     position: relative;
     width: 100%;
-    max-width: 600px;
+    display: flex;
+    align-items: center;
+}
+
+.iconLeft {
+    position: absolute;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+}
+
+.searchBar.focused .iconLeft {
+    color: var(--color-primary);
 }
 
 .input {
     width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    padding-left: var(--space-2xl);
-    font-size: var(--font-size-base);
+    padding: 1rem 6rem 1rem 3rem;
+    background-color: var(--color-bg-card);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    background-color: var(--color-bg);
+    border-radius: var(--radius-xl);
+    font-size: var(--font-size-base);
     color: var(--color-text);
     transition: all var(--transition-base);
-    font-family: inherit;
+    box-shadow: var(--shadow-sm);
 }
 
 .input:focus {
     outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(155, 195, 176, 0.25);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(36, 99, 235, 0.1);
 }
 
 .input::placeholder {
     color: var(--color-text-muted);
 }
 
-.icon {
+/* Right section with spinner and kbd */
+.rightSection {
     position: absolute;
-    left: var(--space-md);
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: var(--font-size-lg);
-    pointer-events: none;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
+/* Loading spinner */
+.spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--color-primary);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.spinnerVisible {
+    opacity: 1;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Keyboard shortcut badge */
+.kbd {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.625rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+    .kbd {
+        display: inline-flex;
+    }
+}
+
+.kbd span {
+    font-family: 'Public Sans', monospace;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .input {
-        font-size: var(--font-size-sm);
+        padding: 0.875rem 1rem 0.875rem 2.5rem;
+    }
+
+    .iconLeft {
+        left: 0.75rem;
+    }
+
+    .rightSection {
+        right: 0.75rem;
     }
 }

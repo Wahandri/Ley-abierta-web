@@ -1,6 +1,6 @@
 .container {
     width: 100%;
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg-secondary);
     border-radius: var(--radius-full);
     overflow: hidden;
 }
@@ -8,17 +8,44 @@
 .bar {
     height: 100%;
     border-radius: var(--radius-full);
-    transition: width var(--transition-slow);
+    transition: all var(--transition-base);
 }
 
-.low {
+/* Impact levels with colors matching the demo */
+.bar.low {
     background-color: var(--color-impact-low);
 }
 
-.mid {
+.bar.mid {
     background-color: var(--color-impact-mid);
 }
 
-.high {
+.bar.high {
     background-color: var(--color-impact-high);
+    /* Add shadow glow for high impact (85+) */
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+/* Extra glow for very high impact (92+) */
+.bar.high[style*="width: 92"],
+.bar.high[style*="width: 93"],
+.bar.high[style*="width: 94"],
+.bar.high[style*="width: 95"],
+.bar.high[style*="width: 96"],
+.bar.high[style*="width: 97"],
+.bar.high[style*="width: 98"],
+.bar.high[style*="width: 99"],
+.bar.high[style*="width: 100"] {
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
+/* Primary color for all impact bars to match demo */
+.bar {
+    background-color: var(--color-primary);
+}
+
+/* High impact gets extra shadow */
+.bar[style*="width: 8"],
+.bar[style*="width: 9"] {
+    box-shadow: 0 0 8px rgba(36, 99, 235, 0.4);
 }

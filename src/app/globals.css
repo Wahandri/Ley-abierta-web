@@ -17,7 +17,7 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
@@ -26,40 +26,37 @@ body {
 }
 
 /* ==========================================
-   CSS VARIABLES - DESIGN SYSTEM
+   CSS VARIABLES - LEGALCLARIDAD DESIGN SYSTEM
    ========================================== */
 
 :root {
-  /* Colors - Editorial Palette */
+  /* Primary color */
+  --color-primary: #8EC7B5;
+  --color-primary-dark: #6da896;
+  --color-primary-light: #ace2d1;
+  --color-primary-soft: rgba(36, 99, 235, 0.08);
 
-  /* Primary: Blue Grey (structure & text) */
-  --color-primary: #5a6475;
-  --color-primary-dark: #3f4756;
-  --color-primary-light: #7c8697;
-  --color-primary-soft: rgba(90, 100, 117, 0.08);
+  /* Accent color */
+  --color-accent: #8EC7B5;
+  --color-accent-soft: rgba(142, 199, 181, 0.12);
 
-  /* Accent: Soft Green (actions & emphasis) */
-  --color-accent: #9bc3b0;
-  --color-accent-hover: #88b3a1;
-  --color-accent-soft: rgba(155, 195, 176, 0.18);
-
-  /* Backgrounds */
-  --color-bg: #ffffff;
-  --color-bg-alt: rgba(90, 100, 117, 0.03);
+  /* Backgrounds - Light Mode */
+  --color-bg: #f6f6f8;
+  --color-bg-alt: #ffffff;
   --color-bg-card: #ffffff;
-  --color-bg-hover: rgba(90, 100, 117, 0.06);
-  --color-bg-secondary: rgba(90, 100, 117, 0.04);
-  --color-bg-tertiary: rgba(90, 100, 117, 0.07);
+  --color-bg-hover: rgba(241, 245, 249, 0.8);
+  --color-bg-secondary: #f1f5f9;
+  --color-bg-tertiary: #e2e8f0;
 
-  /* Text */
-  --color-text: #4b5565;
-  --color-text-secondary: #6b7586;
-  --color-text-muted: #8a95a6;
+  /* Text - Light Mode */
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
 
-  /* Borders */
-  --color-border: rgba(90, 100, 117, 0.18);
-  --color-border-light: rgba(90, 100, 117, 0.12);
-  --color-border-dark: rgba(90, 100, 117, 0.28);
+  /* Borders - Light Mode */
+  --color-border: #e2e8f0;
+  --color-border-light: #f1f5f9;
+  --color-border-dark: #cbd5e1;
 
   /* Impact Colors - Vibrant & Intuitive */
   --color-impact-low: #22c55e;
@@ -70,8 +67,8 @@ body {
   --color-impact-high-bg: rgba(239, 68, 68, 0.12);
 
   /* Glass */
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(90, 100, 117, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(226, 232, 240, 0.6);
 
   /* Shadows - Elevated & Modern */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -91,10 +88,9 @@ body {
   --space-2xl: 3rem;
   --space-3xl: 4rem;
 
-  /* Typography - System Fonts stack is fine, but lets tune sizes */
-  --font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Typography */
+  --font-family-sans: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-family-serif: Georgia, Cambria, "Times New Roman", Times, serif;
-  /* Useful for "article" feel */
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -127,6 +123,50 @@ body {
 
   /* Sidebar */
   --sidebar-width: 300px;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --color-bg: #111621;
+  --color-bg-alt: #1e293b;
+  --color-bg-card: #1e293b;
+  --color-bg-hover: rgba(30, 41, 59, 0.8);
+  --color-bg-secondary: #0f172a;
+  --color-bg-tertiary: #1e293b;
+
+  --color-text: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+
+  --color-border: #334155;
+  --color-border-light: #1e293b;
+  --color-border-dark: #475569;
+
+  --glass-bg: rgba(30, 41, 59, 0.8);
+  --glass-border: rgba(51, 65, 85, 0.6);
+}
+
+/* Material Symbols Outlined */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #111621;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #282d39;
+  border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3f4451;
 }
 
 /* ==========================================
@@ -273,24 +313,24 @@ button {
 }
 
 .btn-primary {
-  background-color: var(--color-accent);
+  background-color: var(--color-primary);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-accent-hover);
+  background-color: var(--color-primary-dark);
   text-decoration: none;
 }
 
 .btn-secondary {
-  background-color: var(--color-bg);
+  background-color: var(--color-bg-card);
   color: var(--color-primary);
   border-color: var(--color-border-dark);
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-accent-soft);
-  border-color: var(--color-accent);
+  background-color: var(--color-primary-soft);
+  border-color: var(--color-primary);
   color: var(--color-primary-dark);
   text-decoration: none;
 }

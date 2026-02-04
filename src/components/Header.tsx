@@ -41,9 +41,13 @@ export default function Header() {
 
     return (
         <header className={`${styles.header} ${!isVisible ? styles.headerHidden : ''}`}>
-            <div className={`container ${styles.container}`}>
-                <Link href="/" className={styles.logo}>
-                    <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            <div className={styles.container}>
+                <Link href="/" className={styles.logoWrapper}>
+                    <img
+                        src="/logo.png"
+                        alt="Logo"
+                        className={styles.logo}
+                    />
                 </Link>
 
                 <button
@@ -70,14 +74,14 @@ export default function Header() {
                         className={`${styles.navLink} ${isDocs ? styles.navLinkActive : ''}`}
                         onClick={() => setMobileMenuOpen(false)}
                     >
-                        Documentos
+                        Explorador
                     </Link>
                     <Link
                         href="/como-funciona"
                         className={`${styles.navLink} ${isComoFunciona ? styles.navLinkActive : ''}`}
                         onClick={() => setMobileMenuOpen(false)}
                     >
-                        Cómo funciona
+                        Sobre Nosotros
                     </Link>
                 </nav>
             </div>

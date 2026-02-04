@@ -1,4 +1,4 @@
-# Ley Abierta / El Vigilante 🔍
+# Ley Abierta
 
 **Leyes y documentos públicos españoles explicados en lenguaje claro.**
 

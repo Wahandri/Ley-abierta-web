@@ -12,11 +12,13 @@ interface ExplorerSidebarProps {
         impact_counts?: Record<string, number>;
     };
     totalResults?: number;
+    latestDocumentDate?: string | null;
+    oldestDocumentDate?: string | null;
     isOpen?: boolean;
     onClose?: () => void;
 }
 
-export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = false, onClose }: ExplorerSidebarProps) {
+export default function ExplorerSidebar({ facets, totalResults = 0, latestDocumentDate = null, oldestDocumentDate = null, isOpen = false, onClose }: ExplorerSidebarProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -174,6 +176,11 @@ export default function ExplorerSidebar({ facets, totalResults = 0, isOpen = fal
                     <div className={styles.greenBoxCount}>
                         {totalResults.toLocaleString()} <span className={styles.greenBoxLabel}>resultados</span>
                     </div>
+                    {oldestDocumentDate && latestDocumentDate && (
+                        <p className={styles.greenBoxDate}>
+                            Desde {formatDate(oldestDocumentDate)} hasta {formatDate(latestDocumentDate)}
+                        </p>
+                    )}
                 </div>
 
                 {/* Search */}

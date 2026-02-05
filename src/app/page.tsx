@@ -31,11 +31,6 @@ export default function Home() {
           <path d="M2.5 5.83333H17.5M5.83333 10H14.1667M8.33333 14.1667H11.6667" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
         Filtros
-        {facets && (
-          <span className={styles.filterBadge}>
-            {Object.keys(facets.topic_counts || {}).length}
-          </span>
-        )}
       </button>
 
       <div className={styles.explorerLayout}>

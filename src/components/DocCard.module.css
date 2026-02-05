@@ -24,7 +24,14 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: var(--space-sm);
     margin-bottom: var(--space-md);
+}
+
+.badges {
+    display: flex;
+    gap: 0.375rem;
+    flex-wrap: wrap;
 }
 
 .docTypeBadge {

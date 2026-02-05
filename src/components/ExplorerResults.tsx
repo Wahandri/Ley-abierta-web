@@ -14,6 +14,8 @@ interface QueryResult {
     page: number;
     pageSize: number;
     hasMore: boolean;
+    latestDocumentDate: string | null;
+    oldestDocumentDate: string | null;
 }
 
 interface Facets {
@@ -25,9 +27,10 @@ interface Facets {
 interface ExplorerResultsProps {
     onFacetsUpdate?: (facets: Facets) => void;
     onTotalUpdate?: (total: number) => void;
+    onDateRangeUpdate?: (dates: { oldestDate: string | null; latestDate: string | null }) => void;
 }
 
-export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate }: ExplorerResultsProps) {
+export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate, onDateRangeUpdate }: ExplorerResultsProps) {
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -78,6 +81,12 @@ export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate }: Explo
                 // Notify parent components
                 if (onFacetsUpdate) onFacetsUpdate(facetsData);
                 if (onTotalUpdate) onTotalUpdate(docsData.total);
+                if (onDateRangeUpdate) {
+                    onDateRangeUpdate({
+                        oldestDate: docsData.oldestDocumentDate,
+                        latestDate: docsData.latestDocumentDate
+                    });
+                }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
                 console.error('Error fetching data:', err);
@@ -87,7 +96,7 @@ export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate }: Explo
         };
 
         fetchInitialData();
-    }, [searchParams, onFacetsUpdate, onTotalUpdate]);
+    }, [searchParams, onFacetsUpdate, onTotalUpdate, onDateRangeUpdate]);
 
     // Fetch more pages
     useEffect(() => {

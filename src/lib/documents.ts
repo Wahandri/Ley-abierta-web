@@ -69,6 +69,8 @@ export interface QueryResult {
     page: number;
     pageSize: number;
     hasMore: boolean;
+    latestDocumentDate: string | null;
+    oldestDocumentDate: string | null;
 }
 
 export async function queryDocs(options: QueryOptions = {}): Promise<QueryResult> {
@@ -148,6 +150,18 @@ export async function queryDocs(options: QueryOptions = {}): Promise<QueryResult
 
     // Pagination
     const total = filtered.length;
+    const latestDocumentDate = total > 0
+        ? filtered.reduce((latest, doc) => {
+            const docDate = new Date(doc.date_published).getTime();
+            return docDate > latest ? docDate : latest;
+        }, 0)
+        : null;
+    const oldestDocumentDate = total > 0
+        ? filtered.reduce((oldest, doc) => {
+            const docDate = new Date(doc.date_published).getTime();
+            return docDate < oldest ? docDate : oldest;
+        }, Number.POSITIVE_INFINITY)
+        : null;
     const startIdx = (page - 1) * pageSize;
     const endIdx = startIdx + pageSize;
     const docs = filtered.slice(startIdx, endIdx);
@@ -158,7 +172,9 @@ export async function queryDocs(options: QueryOptions = {}): Promise<QueryResult
         total,
         page,
         pageSize,
-        hasMore
+        hasMore,
+        latestDocumentDate: latestDocumentDate ? new Date(latestDocumentDate).toISOString() : null,
+        oldestDocumentDate: oldestDocumentDate ? new Date(oldestDocumentDate).toISOString() : null
     };
 }
 

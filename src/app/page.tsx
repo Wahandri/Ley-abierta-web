@@ -9,6 +9,8 @@ import Skeleton from '@/components/Skeleton';
 export default function Home() {
   const [facets, setFacets] = useState<any>(null);
   const [totalResults, setTotalResults] = useState(0);
+  const [latestDocumentDate, setLatestDocumentDate] = useState<string | null>(null);
+  const [oldestDocumentDate, setOldestDocumentDate] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleFacetsUpdate = useCallback((newFacets: any) => {
@@ -17,6 +19,11 @@ export default function Home() {
 
   const handleTotalUpdate = useCallback((total: number) => {
     setTotalResults(total);
+  }, []);
+
+  const handleDateRangeUpdate = useCallback((dates: { oldestDate: string | null; latestDate: string | null }) => {
+    setOldestDocumentDate(dates.oldestDate);
+    setLatestDocumentDate(dates.latestDate);
   }, []);
 
   return (
@@ -40,6 +47,8 @@ export default function Home() {
             <ExplorerSidebar
               facets={facets}
               totalResults={totalResults}
+              latestDocumentDate={latestDocumentDate}
+              oldestDocumentDate={oldestDocumentDate}
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
             />
@@ -61,6 +70,7 @@ export default function Home() {
             <ExplorerResults
               onFacetsUpdate={handleFacetsUpdate}
               onTotalUpdate={handleTotalUpdate}
+              onDateRangeUpdate={handleDateRangeUpdate}
             />
           </Suspense>
         </main>

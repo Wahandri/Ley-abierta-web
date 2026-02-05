@@ -100,13 +100,4 @@
     transform: scale(0.95);
   }
 
-  .filterBadge {
-    background: white;
-    color: var(--color-primary);
-    font-size: 0.75rem;
-    padding: 0.15rem 0.5rem;
-    border-radius: 9999px;
-    margin-left: 0.5rem;
-    font-weight: bold;
-  }
 }

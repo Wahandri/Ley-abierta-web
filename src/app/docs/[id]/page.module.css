@@ -163,7 +163,7 @@
 }
 
 .summary {
-    font-size: 1.125rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3rem);
     line-height: 1.7;
     color: var(--color-text);
     font-family: var(--font-family-serif);
@@ -413,6 +413,13 @@ details[open] .detailsSummary svg {
     box-shadow: var(--shadow-md);
 }
 
+.btnPrimary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .btnSecondary {
     background: transparent;
     color: var(--color-text);
@@ -479,6 +486,10 @@ details[open] .detailsSummary svg {
 @media (max-width: 768px) {
     .title {
         font-size: 2rem;
+    }
+
+    .summary {
+        font-size: 1.125rem;
     }
 
     .hero {

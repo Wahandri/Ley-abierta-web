@@ -15,9 +15,14 @@ export default function DocCard({ doc }: DocCardProps) {
     return (
         <Link href={`/docs/${doc.id}`} className={styles.card}>
             <div className={styles.header}>
-                <span className={styles.docTypeBadge}>
-                    {getTypeLabel(doc.type)}
-                </span>
+                <div className={styles.badges}>
+                    <span className={styles.docTypeBadge}>
+                        {getTypeLabel(doc.type)}
+                    </span>
+                    <span className={styles.docTypeBadge}>
+                        {getTopicLabel(doc.topic_primary)}
+                    </span>
+                </div>
                 <time className={styles.date} dateTime={doc.date_published}>
                     {formatDate(doc.date_published)}
                 </time>

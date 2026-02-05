@@ -2,17 +2,15 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import styles from './page.module.css';
-import ImpactBadge from '@/components/ImpactBadge';
-import ImpactBar from '@/components/ImpactBar';
 import CircularProgress from '@/components/CircularProgress';
 import DocCard from '@/components/DocCard';
 import { getDocById, getRelatedDocs } from '@/lib/documents';
 import {
     formatDate,
-    getTypeLabel,
     getTopicLabel,
     getAffectedLabel
 } from '@/lib/constants';
+import DetailActions from '@/components/DetailActions';
 
 interface Props {
     params: Promise<{ id: string }>;
@@ -43,7 +41,18 @@ export default async function DocDetailPage({ params }: Props) {
     }
 
     const relatedDocs = await getRelatedDocs(doc, 3);
-    const readingTime = doc.text_length ? Math.ceil(doc.text_length / 200) : 5; // Est. 5 min if missing
+    const transparencyNotes = [
+        `Fuente oficial: ${doc.source || 'Boletín Oficial del Estado'} (${doc.id}).`,
+        doc.updated_at
+            ? `Última actualización registrada: ${formatDate(doc.updated_at)}.`
+            : `Publicado oficialmente el ${formatDate(doc.date_published)}.`,
+        doc.entry_into_force
+            ? `Entrada en vigor: ${formatDate(doc.entry_into_force)}.`
+            : 'No se indica una fecha de entrada en vigor diferenciada en los metadatos.',
+        doc.changes_summary
+            ? `Cambios clave identificados: ${doc.changes_summary}`
+            : 'No hay resumen de cambios adicional disponible en los datos.'
+    ];
 
     return (
         <div className={styles.page}>
@@ -53,7 +62,7 @@ export default async function DocDetailPage({ params }: Props) {
                 <span className={styles.separator}>›</span>
                 <Link href="/docs">Biblioteca</Link>
                 <span className={styles.separator}>›</span>
-                <span className={styles.current}>Nueva Ley de Vivienda</span>
+                <span className={styles.current}>{doc.short_title || doc.title_original}</span>
             </nav>
 
             {/* Hero Section - Dark Navy Background */}
@@ -119,7 +128,7 @@ export default async function DocDetailPage({ params }: Props) {
                                 <p className={styles.infoCardText}>
                                     {doc.affects_to && doc.affects_to.length > 0
                                         ? doc.affects_to.map(g => getAffectedLabel(g)).join(', ')
-                                        : 'Inquilinos con rentas bajas, jóvenes menores de 35 años y propietarios de viviendas vacías.'}
+                                        : 'No especificado en la ficha oficial.'}
                                 </p>
                             </div>
 
@@ -136,24 +145,11 @@ export default async function DocDetailPage({ params }: Props) {
                                 <h3 className={styles.infoCardTitle}>¿Cuándo entra en vigor?</h3>
                                 <p className={styles.infoCardText}>
                                     {doc.entry_into_force
-                                        ? `Las medidas generales ya son vigentes. Los límites de precios dependen de cada Comunidad Autónoma. Fecha: ${formatDate(doc.entry_into_force)}`
-                                        : `Publicada el ${formatDate(doc.date_published)}`}
+                                        ? `Entrada en vigor registrada: ${formatDate(doc.entry_into_force)}.`
+                                        : `Publicada el ${formatDate(doc.date_published)}.`}
                                 </p>
                             </div>
 
-                            {/* Card 3: Direct help */}
-                            <div className={styles.infoCardSmall}>
-                                <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)' }}>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
-                                        <line x1="12" y1="1" x2="12" y2="23" />
-                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                                    </svg>
-                                </div>
-                                <h3 className={styles.infoCardTitle}>Ayuda Directa</h3>
-                                <p className={styles.infoCardText}>
-                                    Bono Alquiler Joven de hasta 250€ mensuales acumuladas a otras ayudas regionales.
-                                </p>
-                            </div>
                         </div>
                     </section>
 
@@ -205,7 +201,7 @@ export default async function DocDetailPage({ params }: Props) {
                         <CircularProgress score={doc.impact_index?.score || 0} />
                         {doc.impact_index?.reason && (
                             <p className={styles.impactDescription}>
-                                Este documento afecta directamente a la economía mensual de la mayoría de los ciudadanos.
+                                {doc.impact_index.reason}
                             </p>
                         )}
                     </div>
@@ -221,52 +217,31 @@ export default async function DocDetailPage({ params }: Props) {
                                 <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
-                                <span>Traducido de {doc.text_length || 124} páginas de lenguaje técnico legal a 5 minutos de lectura.</span>
+                                <span>{transparencyNotes[0]}</span>
                             </li>
                             <li className={styles.transparencyItem}>
                                 <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
-                                <span>Verificado por expertos en derecho civil y vivienda.</span>
+                                <span>{transparencyNotes[1]}</span>
                             </li>
                             <li className={styles.transparencyItem}>
                                 <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
-                                <span>Actualizado por última vez: hace {Math.ceil(readingTime / 2)} días.</span>
+                                <span>{transparencyNotes[2]}</span>
+                            </li>
+                            <li className={styles.transparencyItem}>
+                                <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                                <span>{transparencyNotes[3]}</span>
                             </li>
                         </ul>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className={styles.actionButtons}>
-                        <button className={styles.btnPrimary}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="7 10 12 15 17 10" />
-                                <line x1="12" y1="15" x2="12" y2="3" />
-                            </svg>
-                            Descargar Resumen PDF
-                        </button>
-                        <button className={styles.btnSecondary}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="6 9 6 2 18 2 18 9" />
-                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                                <rect x="6" y="14" width="12" height="8" />
-                            </svg>
-                            Imprimir Versión Ciudadana
-                        </button>
-                        <button className={styles.btnTertiary}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <circle cx="18" cy="5" r="3" />
-                                <circle cx="6" cy="12" r="3" />
-                                <circle cx="18" cy="19" r="3" />
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                            </svg>
-                            Compartir Documento
-                        </button>
-                    </div>
+                    <DetailActions urlOficial={doc.url_oficial} title={doc.short_title || doc.title_original} />
                 </aside>
             </div>
 

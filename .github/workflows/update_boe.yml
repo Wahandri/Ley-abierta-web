@@ -1,0 +1,70 @@
+name: Update BOE data
+
+on:
+  schedule:
+    - cron: '15 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Ley-Abierta repo
+        uses: actions/checkout@v4
+
+      - name: Detect data changes
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet HEAD~1 HEAD -- data/; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push (Ley-Abierta)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add data/
+            git commit -m "chore: update BOE data"
+            git push
+          else
+            echo "No changes in Ley-Abierta repo"
+          fi
+
+      - name: Checkout web repo
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.has_changes == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Wahandri/Ley-abierta-web
+          token: ${{ secrets.WEB_REPO_TOKEN }}
+          path: web
+
+      - name: Copy JSONL to web repo
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp data/master_2026.jsonl web/src/data/master_2026.jsonl
+
+      - name: Commit and push (web repo)
+        if: github.event_name == 'workflow_dispatch' || steps.changes.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd web
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add src/data/master_2026.jsonl
+            git commit -m "chore: sync master_2026.jsonl"
+            git push
+          else
+            echo "No changes in web repo"
+          fi

@@ -20,11 +20,14 @@ export interface Document {
     version: string;
     created_at: string;
     // Optional fields
+    status?: string;
     approved_by?: string;
     affects_to?: string[];
     transparency_notes?: string;
     entry_into_force?: string;
     changes_summary?: string;
+    key_points?: string[];
+    geo_scope?: string;
     pdf_path?: string;
     section?: string;
     updated_at?: string;

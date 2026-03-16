@@ -51,6 +51,34 @@
     color: var(--color-text-muted);
 }
 
+
+.statusBadge {
+    font-size: 0.625rem;
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary-color);
+    background-color: rgba(14, 116, 144, 0.12);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+.entryIntoForce {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-sm);
+}
+
+.quickPoints {
+    margin: 0 0 var(--space-lg);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    display: grid;
+    gap: 0.25rem;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+}
+
 /* Title */
 .title {
     font-size: var(--font-size-lg);

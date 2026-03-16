@@ -41,6 +41,14 @@ export default async function DocDetailPage({ params }: Props) {
     }
 
     const relatedDocs = await getRelatedDocs(doc, 3);
+    const quickPoints = (doc.key_points && doc.key_points.length > 0
+        ? doc.key_points
+        : doc.summary_plain_es
+            .split('. ')
+            .map(point => point.trim())
+            .filter(Boolean)
+    ).slice(0, 3);
+
     const transparencyNotes = [
         `Fuente oficial: ${doc.source || 'Boletín Oficial del Estado'} (${doc.id}).`,
         doc.updated_at
@@ -56,7 +64,6 @@ export default async function DocDetailPage({ params }: Props) {
 
     return (
         <div className={styles.page}>
-            {/* Breadcrumb Navigation */}
             <nav className={styles.breadcrumb}>
                 <Link href="/">Inicio</Link>
                 <span className={styles.separator}>›</span>
@@ -65,18 +72,14 @@ export default async function DocDetailPage({ params }: Props) {
                 <span className={styles.current}>{doc.short_title || doc.title_original}</span>
             </nav>
 
-            {/* Hero Section - Dark Navy Background */}
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
-                    {/* Category/Topic Badge */}
                     <div className={styles.categoryBadge}>
                         {getTopicLabel(doc.topic_primary).toUpperCase()}
                     </div>
 
-                    {/* Main Title */}
                     <h1 className={styles.title}>{doc.short_title || doc.title_original}</h1>
 
-                    {/* Official Title Box */}
                     <div className={styles.officialTitleBox}>
                         <div className={styles.officialTitleIcon}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -92,29 +95,25 @@ export default async function DocDetailPage({ params }: Props) {
                 </div>
             </section>
 
-            {/* Main Content Layout */}
             <div className={styles.container}>
-                {/* Left Column: Content */}
                 <main className={styles.mainContent}>
-                    {/* Citizen Summary */}
-                    <section className={styles.section}>
-                        <h2 className={styles.sectionTitle}>
-                            <span className={styles.sectionIcon}>📄</span>
-                            Resumen Ciudadano
-                        </h2>
-                        <div className={styles.summary}>
-                            {doc.summary_plain_es}
-                        </div>
-                    </section>
-
-                    {/* Lo importante de un vistazo */}
                     <section className={styles.section}>
                         <h2 className={styles.sectionTitle}>
                             <span className={styles.sectionIcon}>👁️</span>
                             Lo importante de un vistazo
                         </h2>
+
+                        <div className={styles.highlightImpactCard}>
+                            <CircularProgress score={doc.impact_index?.score || 0} />
+                            <div>
+                                <h3 className={styles.infoCardTitle}>Impacto social</h3>
+                                <p className={styles.infoCardText}>
+                                    {doc.impact_index?.reason || 'Sin explicación de impacto disponible en los datos.'}
+                                </p>
+                            </div>
+                        </div>
+
                         <div className={styles.infoCardsGrid}>
-                            {/* Card 1: Who is affected */}
                             <div className={styles.infoCardSmall}>
                                 <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
@@ -132,7 +131,6 @@ export default async function DocDetailPage({ params }: Props) {
                                 </p>
                             </div>
 
-                            {/* Card 2: When it takes effect */}
                             <div className={styles.infoCardSmall}>
                                 <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)' }}>
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
@@ -150,10 +148,44 @@ export default async function DocDetailPage({ params }: Props) {
                                 </p>
                             </div>
 
+                            <div className={styles.infoCardSmall}>
+                                <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(234, 179, 8, 0.1)' }}>
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2">
+                                        <path d="M12 20h9" />
+                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+                                    </svg>
+                                </div>
+                                <h3 className={styles.infoCardTitle}>Cambios clave</h3>
+                                <p className={styles.infoCardText}>
+                                    {doc.changes_summary ?? 'No hay resumen de cambios en los datos.'}
+                                </p>
+                            </div>
+                        </div>
+
+                        {quickPoints.length > 0 && (
+                            <div className={styles.quickPointsBlock}>
+                                <h3 className={styles.quickPointsTitle}>Resumen rápido</h3>
+                                <ul className={styles.quickPointsList}>
+                                    {quickPoints.map((point, index) => (
+                                        <li key={`${doc.id}-quick-${index}`}>
+                                            {point.endsWith('.') ? point : `${point}.`}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </section>
+
+                    <section className={styles.section}>
+                        <h2 className={styles.sectionTitle}>
+                            <span className={styles.sectionIcon}>📄</span>
+                            Resumen Ciudadano
+                        </h2>
+                        <div className={styles.summary}>
+                            {doc.summary_plain_es}
                         </div>
                     </section>
 
-                    {/* BOE Official Data - Expandable */}
                     <section className={styles.section}>
                         <h2 className={styles.sectionTitle}>
                             <span className={styles.sectionIcon}>📋</span>
@@ -194,9 +226,7 @@ export default async function DocDetailPage({ params }: Props) {
                     </section>
                 </main>
 
-                {/* Right Column: Sidebar */}
                 <aside className={styles.sidebar}>
-                    {/* Circular Impact Score */}
                     <div className={styles.impactCard}>
                         <CircularProgress score={doc.impact_index?.score || 0} />
                         {doc.impact_index?.reason && (
@@ -206,7 +236,6 @@ export default async function DocDetailPage({ params }: Props) {
                         )}
                     </div>
 
-                    {/* Transparency Notes */}
                     <div className={styles.transparencyCard}>
                         <h3 className={styles.transparencyTitle}>
                             <span className={styles.infoIcon}>ℹ️</span>
@@ -240,12 +269,10 @@ export default async function DocDetailPage({ params }: Props) {
                         </ul>
                     </div>
 
-                    {/* Action Buttons */}
                     <DetailActions urlOficial={doc.url_oficial} title={doc.short_title || doc.title_original} />
                 </aside>
             </div>
 
-            {/* Related Laws Section */}
             {relatedDocs.length > 0 && (
                 <div className={styles.relatedSection}>
                     <div className={styles.relatedContainer}>

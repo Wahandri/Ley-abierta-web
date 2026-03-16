@@ -94,85 +94,6 @@ export default async function DocDetailPage({ params }: Props) {
                 <main className={styles.mainContent}>
                     <section className={styles.section}>
                         <h2 className={styles.sectionTitle}>
-                            <span className={styles.sectionIcon}>👁️</span>
-                            Lo importante de un vistazo
-                        </h2>
-
-                        <div className={styles.highlightImpactCard}>
-                            <CircularProgress score={doc.impact_index?.score || 0} />
-                            <div>
-                                <h3 className={styles.infoCardTitle}>Impacto social</h3>
-                                <p className={styles.infoCardText}>
-                                    {doc.impact_index?.reason || 'Sin explicación de impacto disponible en los datos.'}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className={styles.infoCardsGrid}>
-                            <div className={styles.infoCardSmall}>
-                                <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                    </svg>
-                                </div>
-                                <h3 className={styles.infoCardTitle}>¿A quién afecta?</h3>
-                                <p className={styles.infoCardText}>
-                                    {doc.affects_to && doc.affects_to.length > 0
-                                        ? doc.affects_to.map(g => getAffectedLabel(g)).join(', ')
-                                        : 'No especificado en la ficha oficial.'}
-                                </p>
-                            </div>
-
-                            <div className={styles.infoCardSmall}>
-                                <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(34, 197, 94, 0.1)' }}>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                        <line x1="16" y1="2" x2="16" y2="6" />
-                                        <line x1="8" y1="2" x2="8" y2="6" />
-                                        <line x1="3" y1="10" x2="21" y2="10" />
-                                    </svg>
-                                </div>
-                                <h3 className={styles.infoCardTitle}>¿Cuándo entra en vigor?</h3>
-                                <p className={styles.infoCardText}>
-                                    {doc.entry_into_force
-                                        ? `Entrada en vigor registrada: ${formatDate(doc.entry_into_force)}.`
-                                        : `Publicada el ${formatDate(doc.date_published)}.`}
-                                </p>
-                            </div>
-
-                            <div className={styles.infoCardSmall}>
-                                <div className={styles.infoCardIcon} style={{ backgroundColor: 'rgba(234, 179, 8, 0.1)' }}>
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2">
-                                        <path d="M12 20h9" />
-                                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-                                    </svg>
-                                </div>
-                                <h3 className={styles.infoCardTitle}>Cambios clave</h3>
-                                <p className={styles.infoCardText}>
-                                    {doc.changes_summary ?? 'No hay resumen de cambios en los datos.'}
-                                </p>
-                            </div>
-                        </div>
-
-                        {quickPoints.length > 0 && (
-                            <div className={styles.quickPointsBlock}>
-                                <h3 className={styles.quickPointsTitle}>Resumen rápido</h3>
-                                <ul className={styles.quickPointsList}>
-                                    {quickPoints.map((point, index) => (
-                                        <li key={`${doc.id}-quick-${index}`}>
-                                            {point.endsWith('.') ? point : `${point}.`}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                    </section>
-
-                    <section className={styles.section}>
-                        <h2 className={styles.sectionTitle}>
                             <span className={styles.sectionIcon}>📄</span>
                             Resumen Ciudadano
                         </h2>
@@ -224,6 +145,51 @@ export default async function DocDetailPage({ params }: Props) {
                 <aside className={styles.sidebar}>
                     <div className={styles.impactCard}>
                         <CircularProgress score={doc.impact_index?.score || 0} />
+                        <p className={styles.impactDescription}>
+                            {doc.impact_index?.reason || 'Sin explicación de impacto disponible en los datos.'}
+                        </p>
+                    </div>
+
+                    <div className={styles.contextCard}>
+                        <h3 className={styles.contextTitle}>Datos clave</h3>
+
+                        <div className={styles.contextItem}>
+                            <h4 className={styles.contextItemTitle}>¿A quién afecta?</h4>
+                            <p className={styles.contextItemText}>
+                                {doc.affects_to && doc.affects_to.length > 0
+                                    ? doc.affects_to.map(g => getAffectedLabel(g)).join(', ')
+                                    : 'No especificado en la ficha oficial.'}
+                            </p>
+                        </div>
+
+                        <div className={styles.contextItem}>
+                            <h4 className={styles.contextItemTitle}>¿Cuándo entra en vigor?</h4>
+                            <p className={styles.contextItemText}>
+                                {doc.entry_into_force
+                                    ? `Entrada en vigor registrada: ${formatDate(doc.entry_into_force)}.`
+                                    : `Publicada el ${formatDate(doc.date_published)}.`}
+                            </p>
+                        </div>
+
+                        <div className={styles.contextItem}>
+                            <h4 className={styles.contextItemTitle}>Cambios clave</h4>
+                            <p className={styles.contextItemText}>
+                                {doc.changes_summary ?? 'No hay resumen de cambios en los datos.'}
+                            </p>
+                        </div>
+
+                        {quickPoints.length > 0 && (
+                            <div className={styles.contextItem}>
+                                <h4 className={styles.contextItemTitle}>Resumen rápido</h4>
+                                <ul className={styles.quickPointsList}>
+                                    {quickPoints.map((point, index) => (
+                                        <li key={`${doc.id}-quick-${index}`}>
+                                            {point.endsWith('.') ? point : `${point}.`}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
 
                     <div className={styles.transparencyCard}>

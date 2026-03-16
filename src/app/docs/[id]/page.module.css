@@ -170,85 +170,58 @@
 }
 
 /* ==========================================
-   INFO CARDS GRID ("Lo importante")
+   SIDEBAR - CONTEXT CARD
    ========================================== */
 
-.infoCardsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-lg);
-}
-
-.infoCardSmall {
-    background: #1e293b;
+.contextCard {
+    background: var(--color-bg-card);
     padding: var(--space-lg);
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(51, 65, 85, 0.6);
-    transition: all var(--transition-base);
-}
-
-.infoCardSmall:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-accent);
-}
-
-.infoCardIcon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-sm);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-md);
 }
 
-.infoCardTitle {
-    font-size: var(--font-size-lg);
+.contextTitle {
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    color: #f1f5f9;
-    margin-bottom: var(--space-sm);
-}
-
-.infoCardText {
-    font-size: var(--font-size-sm);
-    line-height: 1.6;
-    color: #cbd5e1;
+    color: var(--color-text);
     margin: 0;
 }
 
-
-.highlightImpactCard {
-    display: flex;
-    gap: var(--space-md);
-    align-items: center;
-    padding: var(--space-md);
-    margin-bottom: var(--space-lg);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border-light);
-    background: var(--color-bg-card);
+.contextItem {
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-border-light);
 }
 
-.quickPointsBlock {
-    margin-top: var(--space-lg);
-    padding: var(--space-md);
-    background: var(--color-bg-card);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-border-light);
+.contextItem:first-of-type {
+    padding-top: 0;
+    border-top: 0;
 }
 
-.quickPointsTitle {
-    font-size: var(--font-size-base);
-    margin-bottom: var(--space-sm);
+.contextItemTitle {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-primary-dark);
+    margin: 0 0 var(--space-xs);
+}
+
+.contextItemText {
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
 }
 
 .quickPointsList {
     margin: 0;
     padding-left: 1rem;
-    color: var(--text-secondary);
+    color: var(--color-text-secondary);
     display: grid;
     gap: 0.35rem;
+    font-size: var(--font-size-sm);
 }
 
 /* ==========================================
@@ -512,9 +485,6 @@ details[open] .detailsSummary svg {
         order: 2;
     }
 
-    .infoCardsGrid {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 768px) {

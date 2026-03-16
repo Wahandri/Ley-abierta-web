@@ -77,6 +77,23 @@ export function getTypeLabel(type: string): string {
 }
 
 /**
+ * Get status label from document type
+ */
+export function getStatusLabel(type: string): string {
+    const normalizedType = (type || '').toLowerCase();
+
+    if (normalizedType.includes('derog')) return 'Deroga';
+    if (normalizedType.includes('modific') || normalizedType.includes('reforma')) return 'Modifica';
+    if (normalizedType.includes('nuevo') || normalizedType.includes('nueva')) return 'Nuevo';
+
+    const baseNewTypes = ['ley', 'real_decreto', 'orden', 'resolucion', 'reglamento', 'circular', 'acuerdo'];
+    if (baseNewTypes.includes(normalizedType)) return 'Nuevo';
+
+    return 'Actualiza';
+}
+
+
+/**
  * Get label for topic
  */
 export function getTopicLabel(topic: string): string {

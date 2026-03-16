@@ -217,6 +217,40 @@
     margin: 0;
 }
 
+
+.highlightImpactCard {
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-card);
+}
+
+.quickPointsBlock {
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-light);
+}
+
+.quickPointsTitle {
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-sm);
+    color: var(--color-primary-dark);
+}
+
+.quickPointsList {
+    margin: 0;
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    display: grid;
+    gap: 0.35rem;
+}
+
 /* ==========================================
    BOE DATA SECTION
    ========================================== */

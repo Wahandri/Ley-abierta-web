@@ -8,7 +8,8 @@ import { getDocById, getRelatedDocs } from '@/lib/documents';
 import {
     formatDate,
     getTopicLabel,
-    getAffectedLabel
+    getAffectedLabel,
+    getQuickPoints
 } from '@/lib/constants';
 import DetailActions from '@/components/DetailActions';
 
@@ -41,13 +42,7 @@ export default async function DocDetailPage({ params }: Props) {
     }
 
     const relatedDocs = await getRelatedDocs(doc, 3);
-    const quickPoints = (doc.key_points && doc.key_points.length > 0
-        ? doc.key_points
-        : doc.summary_plain_es
-            .split('. ')
-            .map(point => point.trim())
-            .filter(Boolean)
-    ).slice(0, 3);
+    const quickPoints = getQuickPoints(doc, 3);
 
     const transparencyNotes = [
         `Fuente oficial: ${doc.source || 'Boletín Oficial del Estado'} (${doc.id}).`,
@@ -229,11 +224,6 @@ export default async function DocDetailPage({ params }: Props) {
                 <aside className={styles.sidebar}>
                     <div className={styles.impactCard}>
                         <CircularProgress score={doc.impact_index?.score || 0} />
-                        {doc.impact_index?.reason && (
-                            <p className={styles.impactDescription}>
-                                {doc.impact_index.reason}
-                            </p>
-                        )}
                     </div>
 
                     <div className={styles.transparencyCard}>

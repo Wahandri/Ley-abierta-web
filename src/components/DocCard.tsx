@@ -2,7 +2,7 @@ import Link from 'next/link';
 import styles from './DocCard.module.css';
 import ImpactBar from './ImpactBar';
 import { Document } from '@/lib/jsonl';
-import { formatDate, getTypeLabel, getTopicLabel, getAffectedLabel, truncate, getDisplayTitle, getStatusLabel } from '@/lib/constants';
+import { formatDate, getTypeLabel, getTopicLabel, getAffectedLabel, truncate, getDisplayTitle, getStatusLabel, getQuickPoints } from '@/lib/constants';
 
 interface DocCardProps {
     doc: Document;
@@ -11,13 +11,7 @@ interface DocCardProps {
 export default function DocCard({ doc }: DocCardProps) {
     const affectsToDisplay = doc.affects_to?.slice(0, 3) || [];
     const impactScore = doc.impact_index?.score || 0;
-    const quickPoints = (doc.key_points && doc.key_points.length > 0
-        ? doc.key_points
-        : doc.summary_plain_es
-            .split('. ')
-            .map(point => point.trim())
-            .filter(Boolean)
-    ).slice(0, 3);
+    const quickPoints = getQuickPoints(doc, 3);
 
     return (
         <Link href={`/docs/${doc.id}`} className={styles.card}>

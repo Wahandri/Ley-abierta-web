@@ -157,3 +157,31 @@ export function getDisplayTitle(doc: Document): string {
     }
     return doc.title_original;
 }
+
+/**
+ * Get quick points curated for cards/detail views without repeating the summary text.
+ * Only uses explicit key_points and removes duplicates.
+ */
+export function getQuickPoints(doc: Document, limit: number = 3): string[] {
+    if (!doc.key_points || doc.key_points.length === 0) {
+        return [];
+    }
+
+    const seen = new Set<string>();
+
+    return doc.key_points
+        .map(point => point.trim())
+        .filter(Boolean)
+        .filter(point => {
+            const normalized = point
+                .toLowerCase()
+                .replace(/[.,;:!?]+$/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (!normalized || seen.has(normalized)) return false;
+            seen.add(normalized);
+            return true;
+        })
+        .slice(0, limit);
+}

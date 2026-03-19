@@ -105,40 +105,32 @@ export default async function DocDetailPage({ params }: Props) {
                     <section className={styles.section}>
                         <h2 className={styles.sectionTitle}>
                             <span className={styles.sectionIcon}>📋</span>
-                            Datos Oficiales (BOE)
+                            Ficha oficial
                         </h2>
-                        <details className={styles.details}>
-                            <summary className={styles.detailsSummary}>
-                                <span>Ver ficha oficial completa</span>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <polyline points="6 9 12 15 18 9" />
-                                </svg>
-                            </summary>
-                            <div className={styles.detailsContent}>
-                                <div className={styles.boeDataGrid}>
-                                    <div className={styles.boeDataRow}>
-                                        <span className={styles.boeDataLabel}>CÓDIGO BOE</span>
-                                        <span className={styles.boeDataValue}>{doc.id}</span>
-                                    </div>
-                                    <div className={styles.boeDataRow}>
-                                        <span className={styles.boeDataLabel}>PUBLICACIÓN</span>
-                                        <span className={styles.boeDataValue}>{formatDate(doc.date_published)}</span>
-                                    </div>
-                                    <div className={styles.boeDataRow}>
-                                        <span className={styles.boeDataLabel}>REFERENCIA</span>
-                                        <span className={styles.boeDataValue}>{doc.source}</span>
-                                    </div>
-                                    {doc.url_oficial && (
-                                        <div className={styles.boeDataRow}>
-                                            <span className={styles.boeDataLabel}></span>
-                                            <a href={doc.url_oficial} target="_blank" rel="noopener" className={styles.officialLink}>
-                                                Ver PDF oficial ↗
-                                            </a>
-                                        </div>
-                                    )}
+                        <div className={styles.boeDataContainer}>
+                            <div className={styles.boeDataGrid}>
+                                <div className={styles.boeDataRow}>
+                                    <span className={styles.boeDataLabel}>CÓDIGO BOE</span>
+                                    <span className={styles.boeDataValue}>{doc.id}</span>
                                 </div>
+                                <div className={styles.boeDataRow}>
+                                    <span className={styles.boeDataLabel}>PUBLICACIÓN</span>
+                                    <span className={styles.boeDataValue}>{formatDate(doc.date_published)}</span>
+                                </div>
+                                <div className={styles.boeDataRow}>
+                                    <span className={styles.boeDataLabel}>REFERENCIA</span>
+                                    <span className={styles.boeDataValue}>{doc.source}</span>
+                                </div>
+                                {doc.url_oficial && (
+                                    <div className={styles.boeDataRow}>
+                                        <span className={styles.boeDataLabel}></span>
+                                        <a href={doc.url_oficial} target="_blank" rel="noopener" className={styles.officialLink}>
+                                            Ver PDF oficial ↗
+                                        </a>
+                                    </div>
+                                )}
                             </div>
-                        </details>
+                        </div>
                     </section>
                 </main>
 

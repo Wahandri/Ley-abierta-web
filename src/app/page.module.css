@@ -5,10 +5,8 @@
 
 .explorerLayout {
   display: flex;
-  /* Flex is often easier than Grid for simple 2-col sidebar layouts */
   min-height: 100vh;
-  max-width: 1600px;
-  /* Prevent it from getting too wide on ultra-wide screens */
+  max-width: 1440px;
   margin: 0 auto;
 }
 
@@ -27,9 +25,8 @@
 
 .mainContent {
   flex-grow: 1;
-  padding: var(--space-xl);
+  padding: var(--space-2xl) var(--space-2xl);
   min-width: 0;
-  /* Prevents flex child from overflowing */
 }
 
 /* Header within main content */

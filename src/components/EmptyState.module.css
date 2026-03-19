@@ -25,3 +25,21 @@
     font-size: var(--font-size-base);
     max-width: 500px;
 }
+
+.resetButton {
+    margin-top: var(--space-xl);
+    padding: var(--space-md) var(--space-xl);
+    background-color: var(--color-primary);
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-base), transform var(--transition-fast);
+}
+
+.resetButton:hover {
+    background-color: var(--color-primary-dark, #1d4ed8);
+    transform: translateY(-1px);
+}

@@ -2,7 +2,17 @@ import Link from 'next/link';
 import styles from './DocCard.module.css';
 import ImpactBar from './ImpactBar';
 import { Document } from '@/lib/jsonl';
-import { formatDate, getTypeLabel, getTopicLabel, getAffectedLabel, truncate, getDisplayTitle, getStatusLabel, getQuickPoints } from '@/lib/constants';
+import { 
+    formatDate, 
+    getTypeLabel, 
+    getTopicLabel, 
+    getAffectedLabel, 
+    truncate, 
+    getDisplayTitle, 
+    getStatusLabel, 
+    getQuickPoints,
+    getImpactLevel
+} from '@/lib/constants';
 
 interface DocCardProps {
     doc: Document;
@@ -11,19 +21,22 @@ interface DocCardProps {
 export default function DocCard({ doc }: DocCardProps) {
     const affectsToDisplay = doc.affects_to?.slice(0, 3) || [];
     const impactScore = doc.impact_index?.score || 0;
+    const impactReason = doc.impact_index?.reason;
+    const impactLevel = getImpactLevel(impactScore);
     const quickPoints = getQuickPoints(doc, 3);
+    const hasQuickPoints = quickPoints.length > 0;
 
     return (
-        <Link href={`/docs/${doc.id}`} className={styles.card}>
+        <div className={`${styles.card} ${styles[`impact-${impactLevel}`]}`}>
             <div className={styles.header}>
                 <div className={styles.badges}>
                     <span className={styles.docTypeBadge}>
                         {getTypeLabel(doc.type)}
                     </span>
-                    <span className={styles.docTypeBadge}>
+                    <span className={styles.docTopicBadge}>
                         {getTopicLabel(doc.topic_primary)}
                     </span>
-                    <span className={styles.statusBadge}>
+                    <span className={`${styles.statusBadge} ${styles[`status-${getStatusLabel(doc.type).toLowerCase()}`]}`}>
                         {getStatusLabel(doc.type)}
                     </span>
                 </div>
@@ -32,8 +45,10 @@ export default function DocCard({ doc }: DocCardProps) {
                 </time>
             </div>
 
-            <h3 className={styles.title}>
-                {truncate(getDisplayTitle(doc), 100)}
+            <h3 className={styles.title} title={doc.title_original}>
+                <Link href={`/docs/${doc.id}`} className={styles.cardLink}>
+                    {truncate(getDisplayTitle(doc), 110)}
+                </Link>
             </h3>
 
             <p className={styles.entryIntoForce}>
@@ -42,26 +57,27 @@ export default function DocCard({ doc }: DocCardProps) {
                     : `Publicado el ${formatDate(doc.date_published)}`}
             </p>
 
-            <p className={styles.summary}>
-                {truncate(doc.summary_plain_es, 160)}
-            </p>
-
-            {quickPoints.length > 0 && (
-                <ul className={styles.quickPoints}>
-                    {quickPoints.map((point, index) => (
-                        <li key={`${doc.id}-point-${index}`}>
-                            {point.endsWith('.') ? point : `${point}.`}
-                        </li>
-                    ))}
-                </ul>
+            {hasQuickPoints ? (
+                <>
+                    <p className={`${styles.summary} ${styles.summaryShort}`}>
+                        {truncate(doc.summary_plain_es, 100)}
+                    </p>
+                    <ul className={styles.quickPoints}>
+                        {quickPoints.map((point, index) => (
+                            <li key={`${doc.id}-point-${index}`}>
+                                {point.endsWith('.') ? point : `${point}.`}
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            ) : (
+                <p className={`${styles.summary} ${styles.summaryLong}`}>
+                    {truncate(doc.summary_plain_es, 180)}
+                </p>
             )}
 
             <div className={styles.impactSection}>
-                <div className={styles.impactHeader}>
-                    <span className={styles.impactLabel}>Impacto Social</span>
-                    <span className={styles.impactScore}>{impactScore}/100</span>
-                </div>
-                <ImpactBar score={impactScore} />
+                <ImpactBar score={impactScore} reason={impactReason} />
             </div>
 
             {affectsToDisplay.length > 0 && (
@@ -73,6 +89,6 @@ export default function DocCard({ doc }: DocCardProps) {
                     ))}
                 </div>
             )}
-        </Link>
+        </div>
     );
 }

@@ -1,12 +1,15 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import styles from './ExplorerResults.module.css';
 import DocCard from './DocCard';
 import Skeleton from './Skeleton';
 import EmptyState from './EmptyState';
+import CitizenRadar from './CitizenRadar';
 import { Document } from '@/lib/jsonl';
+import { calculateHeuristics } from '@/lib/heuristics';
+import { formatDate } from '@/lib/constants';
 
 interface QueryResult {
     docs: Document[];
@@ -32,6 +35,9 @@ interface ExplorerResultsProps {
 
 export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate, onDateRangeUpdate }: ExplorerResultsProps) {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -126,14 +132,30 @@ export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate, onDateR
     }, [page, searchParams]);
 
     const skeletonArray = Array.from({ length: 9 }, (_, i) => i);
+    const heuristics = docs.length > 0 ? calculateHeuristics(docs) : null;
+
+    const handleReset = () => {
+        router.push(pathname);
+    };
 
     return (
         <div className={styles.results}>
+            {/* Citizen Radar (Heuristics) */}
+            {!loading && !error && docs.length > 0 && heuristics && (
+                <CitizenRadar heuristics={heuristics} totalDocs={docs.length} />
+            )}
+
             {/* Sort Control */}
             {totalResults > 0 && !loading && (
                 <div className={styles.resultsHeader}>
                     <p className={styles.resultsInfo}>
                         Mostrando <strong>{docs.length}</strong> de <strong>{totalResults.toLocaleString()}</strong> documento{totalResults !== 1 ? 's' : ''}
+                        {heuristics?.dateRange?.oldest && heuristics?.dateRange?.newest && (
+                            <> • Entre {formatDate(heuristics.dateRange.oldest)} y {formatDate(heuristics.dateRange.newest)}</>
+                        )}
+                        {heuristics && heuristics.averageImpact > 0 && (
+                            <> • Impacto medio: <strong>{heuristics.averageImpact}/100</strong></>
+                        )}
                     </p>
                 </div>
             )}
@@ -151,6 +173,7 @@ export default function ExplorerResults({ onFacetsUpdate, onTotalUpdate, onDateR
                 <EmptyState
                     message="No hay resultados con estos filtros"
                     suggestion="Prueba a quitar algunos filtros o cambiar tu búsqueda"
+                    onReset={handleReset}
                 />
             )}
 

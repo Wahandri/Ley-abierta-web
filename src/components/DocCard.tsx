@@ -11,7 +11,8 @@ import {
     getDisplayTitle, 
     getStatusLabel, 
     getQuickPoints,
-    getImpactLevel
+    getImpactLevel,
+    getIntentDetails
 } from '@/lib/constants';
 
 interface DocCardProps {
@@ -20,7 +21,7 @@ interface DocCardProps {
 
 export default function DocCard({ doc }: DocCardProps) {
     const affectsToDisplay = doc.affects_to?.slice(0, 3) || [];
-    const impactScore = doc.impact_index?.score || 0;
+    const impactScore = doc.impact_index?.overall || doc.impact_index?.score || 0;
     const impactReason = doc.impact_index?.reason;
     const impactLevel = getImpactLevel(impactScore);
     const quickPoints = getQuickPoints(doc, 3);
@@ -39,6 +40,11 @@ export default function DocCard({ doc }: DocCardProps) {
                     <span className={`${styles.statusBadge} ${styles[`status-${getStatusLabel(doc.type).toLowerCase()}`]}`}>
                         {getStatusLabel(doc.type)}
                     </span>
+                    {doc.document_intent && getIntentDetails(doc.document_intent) && (
+                        <span className={styles.intentBadge} style={{ '--intent-color': getIntentDetails(doc.document_intent)!.color } as React.CSSProperties}>
+                            {getIntentDetails(doc.document_intent)!.icon} {getIntentDetails(doc.document_intent)!.label}
+                        </span>
+                    )}
                 </div>
                 <time className={styles.date} dateTime={doc.date_published}>
                     {formatDate(doc.date_published)}

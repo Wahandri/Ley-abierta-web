@@ -9,7 +9,8 @@ import {
     formatDate,
     getTopicLabel,
     getAffectedLabel,
-    getQuickPoints
+    getQuickPoints,
+    getIntentDetails
 } from '@/lib/constants';
 import DetailActions from '@/components/DetailActions';
 
@@ -69,8 +70,16 @@ export default async function DocDetailPage({ params }: Props) {
 
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
-                    <div className={styles.categoryBadge}>
-                        {getTopicLabel(doc.topic_primary).toUpperCase()}
+                    <div className={styles.badgesWrapper}>
+                        <div className={styles.categoryBadge}>
+                            {getTopicLabel(doc.topic_primary).toUpperCase()}
+                        </div>
+                        {doc.document_intent && getIntentDetails(doc.document_intent) && (
+                            <div className={styles.intentBadge} style={{ '--intent-color': getIntentDetails(doc.document_intent)!.color } as React.CSSProperties}>
+                                <span>{getIntentDetails(doc.document_intent)!.icon}</span>
+                                <span>{getIntentDetails(doc.document_intent)!.label}</span>
+                            </div>
+                        )}
                     </div>
 
                     <h1 className={styles.title}>{doc.short_title || doc.title_original}</h1>
@@ -101,6 +110,25 @@ export default async function DocDetailPage({ params }: Props) {
                             {doc.summary_plain_es}
                         </div>
                     </section>
+
+                    {doc.what_changes && doc.what_changes.length > 0 && (
+                        <section className={styles.section}>
+                            <h2 className={styles.sectionTitle}>
+                                <span className={styles.sectionIcon}>⚡</span>
+                                Cambios Principales
+                            </h2>
+                            <ul className={styles.changesList}>
+                                {doc.what_changes.slice(0, 4).map((change, idx) => (
+                                    <li key={`change-${idx}`} className={styles.changeItem}>
+                                        <svg className={styles.changeIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                        <span>{change}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
 
                     <section className={styles.section}>
                         <h2 className={styles.sectionTitle}>
@@ -136,10 +164,37 @@ export default async function DocDetailPage({ params }: Props) {
 
                 <aside className={styles.sidebar}>
                     <div className={styles.impactCard}>
-                        <CircularProgress score={doc.impact_index?.score || 0} />
+                        <CircularProgress score={doc.impact_index?.overall || doc.impact_index?.score || 0} />
                         <p className={styles.impactDescription}>
                             {doc.impact_index?.reason || 'Sin explicación de impacto disponible en los datos.'}
                         </p>
+
+                        {(doc.impact_index?.economico !== undefined || doc.impact_index?.opacidad !== undefined) && (
+                            <div className={styles.subImpacts}>
+                                {doc.impact_index.economico !== undefined && (
+                                    <div className={styles.subImpactItem}>
+                                        <div className={styles.subImpactHeader}>
+                                            <span>Impacto Económico</span>
+                                            <span className={styles.subImpactScore}>{doc.impact_index.economico}/100</span>
+                                        </div>
+                                        <div className={styles.progressBarBg}>
+                                            <div className={styles.progressBarFill} style={{ width: `${doc.impact_index.economico}%`, backgroundColor: '#3b82f6' }}></div>
+                                        </div>
+                                    </div>
+                                )}
+                                {doc.impact_index.opacidad !== undefined && (
+                                    <div className={styles.subImpactItem}>
+                                        <div className={styles.subImpactHeader}>
+                                            <span>Nivel de Opacidad</span>
+                                            <span className={styles.subImpactScore}>{doc.impact_index.opacidad}/100</span>
+                                        </div>
+                                        <div className={styles.progressBarBg}>
+                                            <div className={styles.progressBarFill} style={{ width: `${doc.impact_index.opacidad}%`, backgroundColor: '#ef4444' }}></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className={styles.contextCard}>
@@ -153,6 +208,28 @@ export default async function DocDetailPage({ params }: Props) {
                                     : 'No especificado en la ficha oficial.'}
                             </p>
                         </div>
+
+                        {doc.who_benefits && doc.who_benefits.length > 0 && (
+                            <div className={styles.contextItem}>
+                                <h4 className={styles.contextItemTitle}>Beneficiarios</h4>
+                                <ul className={styles.agentList}>
+                                    {doc.who_benefits.map((agent, idx) => (
+                                        <li key={`benefit-${idx}`} className={styles.agentItem}>👍 {agent}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {doc.who_might_pay && doc.who_might_pay.length > 0 && (
+                            <div className={styles.contextItem}>
+                                <h4 className={styles.contextItemTitle}>Afectados / Coste</h4>
+                                <ul className={styles.agentList}>
+                                    {doc.who_might_pay.map((agent, idx) => (
+                                        <li key={`pay-${idx}`} className={styles.agentItem}>📉 {agent}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
 
                         <div className={styles.contextItem}>
                             <h4 className={styles.contextItemTitle}>¿Cuándo entra en vigor?</h4>

@@ -15,7 +15,12 @@ export interface Document {
     topic_primary: string;
     impact_index: {
         score: number;
-        reason: string;
+        reason?: string;
+        overall?: number;
+        economico?: number;
+        alcance_ciudadano?: number;
+        urgencia?: number;
+        opacidad?: number;
     };
     version: string;
     created_at: string;
@@ -27,6 +32,10 @@ export interface Document {
     entry_into_force?: string;
     changes_summary?: string;
     key_points?: string[];
+    what_changes?: string[];
+    who_benefits?: string[];
+    who_might_pay?: string[];
+    document_intent?: string;
     geo_scope?: string;
     pdf_path?: string;
     section?: string;

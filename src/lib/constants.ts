@@ -14,6 +14,18 @@ export const DOCUMENT_TYPES = {
     otros: 'Otros'
 };
 
+// Document intents
+export const DOCUMENT_INTENT_LABELS: Record<string, { label: string, color: string, icon: string }> = {
+    convalida: { label: 'Convalida', color: '#8b5cf6', icon: '📝' }, // purple
+    nombra: { label: 'Nombra/Cesa', color: '#3b82f6', icon: '👤' }, // blue
+    resuelve_convocatoria: { label: 'Resuelve', color: '#10b981', icon: '✅' }, // emerald
+    aprueba_plan: { label: 'Aprueba Plan', color: '#f59e0b', icon: '🎯' }, // amber
+    publica_acuerdo: { label: 'Acuerdo', color: '#6366f1', icon: '🤝' }, // indigo
+    modifica: { label: 'Modifica', color: '#f97316', icon: '🔧' }, // orange
+    deroga: { label: 'Deroga', color: '#ef4444', icon: '🗑️' } // red
+};
+
+
 // Topics
 export const TOPICS = {
     economia: 'Economía',
@@ -75,6 +87,15 @@ export function getImpactLevel(score: number): keyof typeof IMPACT_LEVELS {
 export function getTypeLabel(type: string): string {
     return DOCUMENT_TYPES[type as keyof typeof DOCUMENT_TYPES] || type;
 }
+
+/**
+ * Get document intent details
+ */
+export function getIntentDetails(intent?: string): { label: string, color: string, icon: string } | null {
+    if (!intent) return null;
+    return DOCUMENT_INTENT_LABELS[intent as keyof typeof DOCUMENT_INTENT_LABELS] || null;
+}
+
 
 /**
  * Get status label from document type

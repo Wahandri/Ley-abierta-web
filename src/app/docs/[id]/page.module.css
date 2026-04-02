@@ -500,3 +500,118 @@
         font-size: 0.7rem;
     }
 }
+
+/* ==========================================
+   SCHEMA V2.1 CUSTOM STYLES
+   ========================================== */
+
+.badgesWrapper {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.categoryBadge {
+    margin-bottom: 0 !important; /* overrides previous margin */
+}
+
+.intentBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.05); /* very slightly visible background fallback */
+    border: 1px solid var(--intent-color);
+    border-radius: var(--radius-sm);
+    color: var(--intent-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.changesList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.changeItem {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1rem);
+    line-height: 1.6;
+    color: var(--color-text);
+    background: var(--color-bg-secondary);
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-accent);
+}
+
+.changeIcon {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--color-accent);
+}
+
+.agentList {
+    margin: var(--space-xs) 0 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.agentItem {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+}
+
+.subImpacts {
+    margin-top: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    text-align: left;
+}
+
+.subImpactItem {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.subImpactHeader {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subImpactScore {
+    color: var(--color-text);
+}
+
+.progressBarBg {
+    height: 8px;
+    background: var(--color-border-light);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progressBarFill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}

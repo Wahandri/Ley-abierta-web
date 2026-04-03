@@ -3,11 +3,9 @@
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
 import styles from './page.module.css';
-import SearchBar from '@/components/SearchBar';
 import FiltersPanel from '@/components/FiltersPanel';
 import DocsTable from '@/components/DocsTable';
 import SortControl from '@/components/SortControl';
-import Pagination from '@/components/Pagination';
 import Skeleton from '@/components/Skeleton';
 import EmptyState from '@/components/EmptyState';
 import { Document } from '@/lib/jsonl';
@@ -20,6 +18,12 @@ interface QueryResult {
     hasMore: boolean;
 }
 
+interface FacetsData {
+    topic_counts?: Record<string, number>;
+    affects_counts?: Record<string, number>;
+    impact_counts?: Record<string, number>;
+}
+
 function DocsContent() {
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState(true);
@@ -27,7 +31,7 @@ function DocsContent() {
     const [error, setError] = useState<string | null>(null);
     const [docs, setDocs] = useState<Document[]>([]);
     const [totalResults, setTotalResults] = useState(0);
-    const [facets, setFacets] = useState<any>(null);
+    const [facets, setFacets] = useState<FacetsData | undefined>(undefined);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
@@ -113,15 +117,15 @@ function DocsContent() {
     return (
         <div className={styles.page}>
             <div className={styles.header}>
-                <h1 className={styles.title}>Documentos</h1>
+                <h1 className={styles.title}>Explorador documental</h1>
                 <p className={styles.subtitle}>
-                    Explora todas las leyes y documentos públicos
+                    Consulta leyes y documentos públicos en lenguaje claro
                 </p>
             </div>
 
             <div className={styles.searchSection}>
                 <p className={styles.introText}>
-                    Todas las leyes y sus documentos oficiales.
+Listado actualizado de normativa y documentación oficial para ciudadanía y análisis.
                 </p>
             </div>
 

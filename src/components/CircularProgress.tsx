@@ -1,6 +1,7 @@
 'use client';
 
 import styles from './CircularProgress.module.css';
+import { getImpactLevel, IMPACT_LEVELS } from '@/lib/constants';
 
 interface CircularProgressProps {
     score: number; // 0-100
@@ -18,6 +19,9 @@ export default function CircularProgress({
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
     const offset = circumference - (score / 100) * circumference;
+
+    const level = getImpactLevel(score);
+    const impactLabel = IMPACT_LEVELS[level].label;
 
     return (
         <div className={styles.container}>
@@ -57,7 +61,7 @@ export default function CircularProgress({
                     <div className={styles.scoreLabel}>sobre 100</div>
                 </div>
             </div>
-            <div className={styles.impactLabel}>Alto Impacto Ciudadano</div>
+            <div className={styles.impactLabel}>{impactLabel} Impacto Ciudadano</div>
         </div>
     );
 }

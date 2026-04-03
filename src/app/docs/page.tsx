@@ -31,7 +31,7 @@ function DocsContent() {
     const [error, setError] = useState<string | null>(null);
     const [docs, setDocs] = useState<Document[]>([]);
     const [totalResults, setTotalResults] = useState(0);
-    const [facets, setFacets] = useState<FacetsData | null>(null);
+    const [facets, setFacets] = useState<FacetsData | undefined>(undefined);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
@@ -74,7 +74,7 @@ function DocsContent() {
                 setDocs(docsData.docs);
                 setTotalResults(docsData.total);
                 setHasMore(docsData.hasMore);
-                setFacets(facetsData);
+                setFacets(facetsData ?? undefined);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
             } finally {

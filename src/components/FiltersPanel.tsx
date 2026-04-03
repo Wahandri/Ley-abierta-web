@@ -1,12 +1,11 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './FiltersPanel.module.css';
 import { TOPICS, AFFECTED_GROUPS, IMPACT_LEVELS } from '@/lib/constants';
 
 import SearchBar from './SearchBar';
-import { formatDate } from '@/lib/constants';
 
 interface FiltersPanelProps {
     facets?: {

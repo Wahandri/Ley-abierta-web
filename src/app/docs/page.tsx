@@ -31,7 +31,7 @@ function DocsContent() {
     const [error, setError] = useState<string | null>(null);
     const [docs, setDocs] = useState<Document[]>([]);
     const [totalResults, setTotalResults] = useState(0);
-    const [facets, setFacets] = useState<FacetsData | undefined>(undefined);
+    const [facets, setFacets] = useState<FacetsData | null>(null);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 

@@ -84,6 +84,26 @@
 .status-modifica { color: #92400e; background: rgba(245, 158, 11, 0.16); }
 .status-deroga { color: #991b1b; background: rgba(220, 38, 38, 0.14); }
 
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.actionBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
 .date {
   font-size: 0.8125rem;
   color: var(--color-text-muted);

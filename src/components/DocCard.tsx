@@ -46,9 +46,14 @@ export default function DocCard({ doc }: DocCardProps) {
                         </span>
                     )}
                 </div>
-                <time className={styles.date} dateTime={doc.date_published}>
-                    {formatDate(doc.date_published)}
-                </time>
+                <div className={styles.cardMeta}>
+                    {doc.action_required && (
+                        <span className={styles.actionBadge}>📢 Convocatoria</span>
+                    )}
+                    <time className={styles.date} dateTime={doc.date_published}>
+                        {formatDate(doc.date_published)}
+                    </time>
+                </div>
             </div>
 
             <h3 className={styles.title} title={doc.title_original}>

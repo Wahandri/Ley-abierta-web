@@ -28,9 +28,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    const title = doc.short_title || doc.title_original;
+    const description = doc.summary_plain_es.slice(0, 160);
+    const url = `https://letabierta.com/docs/${doc.id}`;
+
     return {
-        title: `${doc.short_title || doc.title_original} - Ley Abierta`,
-        description: doc.summary_plain_es.slice(0, 160),
+        title,
+        description,
+        alternates: { canonical: url },
+        openGraph: {
+            type: 'article',
+            url,
+            title,
+            description,
+            publishedTime: doc.date_published,
+            modifiedTime: doc.updated_at || doc.date_published,
+            locale: 'es_ES',
+            siteName: 'Ley Abierta',
+            images: [{ url: '/og-image.png', width: 1200, height: 630, alt: title }],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: ['/og-image.png'],
+        },
     };
 }
 
@@ -80,6 +102,16 @@ export default async function DocDetailPage({ params }: Props) {
                                 <span>{getIntentDetails(doc.document_intent)!.label}</span>
                             </div>
                         )}
+                        {doc.document_scope && (
+                            <div className={styles.scopeBadge}>
+                                {doc.document_scope}
+                            </div>
+                        )}
+                        {doc.geographic_scope && doc.geographic_scope.length > 0 && (
+                            <div className={styles.geoBadge}>
+                                📍 {doc.geographic_scope.join(', ')}
+                            </div>
+                        )}
                     </div>
 
                     <h1 className={styles.title}>{doc.short_title || doc.title_original}</h1>
@@ -98,6 +130,26 @@ export default async function DocDetailPage({ params }: Props) {
                     </div>
                 </div>
             </section>
+
+            {/* Banner acción ciudadana */}
+            {doc.action_required && (
+                <div className={styles.actionBanner}>
+                    <div className={styles.actionBannerInner}>
+                        <span className={styles.actionBannerIcon}>📢</span>
+                        <div>
+                            <strong>Convocatoria abierta — puedes participar</strong>
+                            {doc.action_required_details && (
+                                <p className={styles.actionBannerDetail}>{doc.action_required_details}</p>
+                            )}
+                        </div>
+                        {doc.url_oficial && (
+                            <a href={doc.url_oficial} target="_blank" rel="noopener" className={styles.actionBannerLink}>
+                                Ver convocatoria ↗
+                            </a>
+                        )}
+                    </div>
+                </div>
+            )}
 
             <div className={styles.container}>
                 <main className={styles.mainContent}>
@@ -145,8 +197,20 @@ export default async function DocDetailPage({ params }: Props) {
                                     <span className={styles.boeDataLabel}>PUBLICACIÓN</span>
                                     <span className={styles.boeDataValue}>{formatDate(doc.date_published)}</span>
                                 </div>
+                                {doc.section && (
+                                    <div className={styles.boeDataRow}>
+                                        <span className={styles.boeDataLabel}>SECCIÓN</span>
+                                        <span className={styles.boeDataValue}>{doc.section}</span>
+                                    </div>
+                                )}
+                                {doc.approved_by && doc.approved_by !== 'No especificado' && (
+                                    <div className={styles.boeDataRow}>
+                                        <span className={styles.boeDataLabel}>APROBADO POR</span>
+                                        <span className={styles.boeDataValue}>{doc.approved_by}</span>
+                                    </div>
+                                )}
                                 <div className={styles.boeDataRow}>
-                                    <span className={styles.boeDataLabel}>REFERENCIA</span>
+                                    <span className={styles.boeDataLabel}>FUENTE</span>
                                     <span className={styles.boeDataValue}>{doc.source}</span>
                                 </div>
                                 {doc.url_oficial && (
@@ -203,9 +267,11 @@ export default async function DocDetailPage({ params }: Props) {
                         <div className={styles.contextItem}>
                             <h4 className={styles.contextItemTitle}>¿A quién afecta?</h4>
                             <p className={styles.contextItemText}>
-                                {doc.affects_to && doc.affects_to.length > 0
-                                    ? doc.affects_to.map(g => getAffectedLabel(g)).join(', ')
-                                    : 'No especificado en la ficha oficial.'}
+                                {doc.affects_summary
+                                    ? doc.affects_summary
+                                    : doc.affects_to && doc.affects_to.length > 0
+                                        ? doc.affects_to.map(g => getAffectedLabel(g)).join(', ')
+                                        : 'No especificado.'}
                             </p>
                         </div>
 
@@ -231,21 +297,32 @@ export default async function DocDetailPage({ params }: Props) {
                             </div>
                         )}
 
-                        <div className={styles.contextItem}>
-                            <h4 className={styles.contextItemTitle}>¿Cuándo entra en vigor?</h4>
-                            <p className={styles.contextItemText}>
-                                {doc.entry_into_force
-                                    ? `Entrada en vigor registrada: ${formatDate(doc.entry_into_force)}.`
-                                    : `Publicada el ${formatDate(doc.date_published)}.`}
-                            </p>
-                        </div>
+                        {/* Fechas clave: schema v2 usa dates_mentioned, v1 usa entry_into_force */}
+                        {(doc.dates_mentioned && doc.dates_mentioned.length > 0) ? (
+                            <div className={styles.contextItem}>
+                                <h4 className={styles.contextItemTitle}>Fechas clave</h4>
+                                <ul className={styles.datesList}>
+                                    {doc.dates_mentioned.map((d, i) => (
+                                        <li key={i} className={styles.datesItem}>
+                                            <span className={styles.datesLabel}>{d.label}</span>
+                                            <span className={styles.datesValue}>{formatDate(d.date)}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : doc.entry_into_force ? (
+                            <div className={styles.contextItem}>
+                                <h4 className={styles.contextItemTitle}>¿Cuándo entra en vigor?</h4>
+                                <p className={styles.contextItemText}>{formatDate(doc.entry_into_force)}</p>
+                            </div>
+                        ) : null}
 
-                        <div className={styles.contextItem}>
-                            <h4 className={styles.contextItemTitle}>Cambios clave</h4>
-                            <p className={styles.contextItemText}>
-                                {doc.changes_summary ?? 'No hay resumen de cambios en los datos.'}
-                            </p>
-                        </div>
+                        {doc.changes_summary && (
+                            <div className={styles.contextItem}>
+                                <h4 className={styles.contextItemTitle}>Cambios clave</h4>
+                                <p className={styles.contextItemText}>{doc.changes_summary}</p>
+                            </div>
+                        )}
 
                         {quickPoints.length > 0 && (
                             <div className={styles.contextItem}>
@@ -260,6 +337,22 @@ export default async function DocDetailPage({ params }: Props) {
                             </div>
                         )}
                     </div>
+
+                    {doc.entities_detected && doc.entities_detected.length > 0 && (
+                        <div className={styles.entitiesCard}>
+                            <h3 className={styles.contextTitle}>Organismos implicados</h3>
+                            <ul className={styles.entitiesList}>
+                                {doc.entities_detected.map((entity, i) => (
+                                    <li key={i} className={styles.entityItem}>
+                                        <span className={styles.entityName}>{entity.name}</span>
+                                        {entity.role && (
+                                            <span className={styles.entityRole}>{entity.role}</span>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
 
                     <div className={styles.transparencyCard}>
                         <h3 className={styles.transparencyTitle}>

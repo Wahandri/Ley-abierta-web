@@ -235,3 +235,151 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Badges nuevos en hero ── */
+.scopeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.geoBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}
+
+/* ── Banner acción ciudadana ── */
+.actionBanner {
+  background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(37,99,235,0.04));
+  border-top: 1px solid rgba(37,99,235,0.2);
+  border-bottom: 1px solid rgba(37,99,235,0.2);
+  padding: 1rem var(--space-xl);
+}
+
+.actionBannerInner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.actionBannerIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.actionBannerInner strong {
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+}
+
+.actionBannerDetail {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0.2rem 0 0;
+}
+
+.actionBannerLink {
+  margin-left: auto;
+  padding: 0.4rem 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease;
+}
+
+.actionBannerLink:hover {
+  background: var(--color-primary-dark);
+  text-decoration: none;
+  color: #fff;
+}
+
+/* ── Fechas clave ── */
+.datesList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.datesItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: var(--font-size-sm);
+}
+
+.datesLabel {
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+  flex: 1;
+}
+
+.datesValue {
+  color: var(--color-text);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ── Organismos implicados ── */
+.entitiesCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.entitiesList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+  margin-top: var(--space-sm);
+}
+
+.entityItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.entityItem:last-child {
+  border-bottom: none;
+}
+
+.entityName {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.entityRole {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: capitalize;
+}

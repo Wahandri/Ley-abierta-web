@@ -118,7 +118,7 @@ export async function queryDocs(options: QueryOptions = {}): Promise<QueryResult
     // Impact filter
     if (impact) {
         filtered = filtered.filter(doc => {
-            const level = getImpactLevel(doc.impact_index?.score || 0);
+            const level = getImpactLevel(doc.impact_index?.overall ?? doc.impact_index?.score ?? 0);
             return level === impact;
         });
     }
@@ -209,7 +209,7 @@ export async function getFacets(): Promise<Facets> {
         }
 
         // Impact counts
-        const impactLevel = getImpactLevel(doc.impact_index?.score || 0);
+        const impactLevel = getImpactLevel(doc.impact_index?.overall ?? doc.impact_index?.score ?? 0);
         impact_counts[impactLevel]++;
     }
 

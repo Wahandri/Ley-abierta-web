@@ -13,10 +13,11 @@ export interface Document {
     summary_plain_es: string;
     keywords: string[];
     topic_primary: string;
+    // impact_index: schema v1 usa score+reason, schema v2 usa overall+submétricas
     impact_index: {
-        score: number;
-        reason?: string;
-        overall?: number;
+        score?: number;       // schema v1 (2025 y anteriores)
+        overall?: number;     // schema v2 (2026+)
+        reason?: string;      // schema v1
         economico?: number;
         alcance_ciudadano?: number;
         urgencia?: number;
@@ -24,7 +25,8 @@ export interface Document {
     };
     version: string;
     created_at: string;
-    // Optional fields
+    updated_at?: string;
+    // Campos comunes
     status?: string;
     approved_by?: string;
     affects_to?: string[];
@@ -39,8 +41,32 @@ export interface Document {
     geo_scope?: string;
     pdf_path?: string;
     section?: string;
-    updated_at?: string;
     text_length?: number;
+    // Campos schema v2 (2026+)
+    affects_summary?: string;
+    action_required?: boolean;
+    action_required_details?: string;
+    document_scope?: string;
+    topics_secondary?: string[];
+    geographic_scope?: string[];
+    money_amounts?: { amount?: number; currency?: string; label?: string }[];
+    dates_mentioned?: { date: string; label: string }[];
+    entities_detected?: { name: string; type?: string; role?: string }[];
+    facts_extracted?: Record<string, string>;
+    confidence?: {
+        overall?: number;
+        summary?: number;
+        classification?: number;
+        entities?: number;
+        dates?: number;
+        money?: number;
+    };
+    processing_flags?: {
+        full_text_available?: boolean;
+        text_truncated?: boolean;
+        fallback_used?: boolean;
+        [key: string]: boolean | undefined;
+    };
 }
 
 /**

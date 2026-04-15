@@ -30,10 +30,29 @@ export default async function HomePage() {
     const totalDocs = allDocs.length;
     const highImpactCount = allDocs.filter(d => (d.impact_index?.score ?? 0) >= 70).length;
 
-    const featuredDocs = allDocs
-        .filter(doc => (doc.impact_index?.score ?? 0) >= 55)
-        .sort((a, b) => new Date(b.date_published).getTime() - new Date(a.date_published).getTime())
+    // Ventana de 30 días desde hoy
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Usar `overall` (schema v2/2026) con fallback a `score` (schema v1/2025 y anteriores)
+    const getImpact = (doc: (typeof allDocs)[0]) =>
+        doc.impact_index?.overall ?? doc.impact_index?.score ?? 0;
+
+    // Destacados recientes: últimos 30 días, impacto ≥ 40, ordenados por impacto desc
+    let featuredDocs = allDocs
+        .filter(doc => new Date(doc.date_published) >= thirtyDaysAgo && getImpact(doc) >= 40)
+        .sort((a, b) => getImpact(b) - getImpact(a))
         .slice(0, 6);
+
+    // Si no hay suficientes, rellenar con los más recientes de todo el archivo
+    if (featuredDocs.length < 6) {
+        const ids = new Set(featuredDocs.map(d => d.id));
+        const fallback = allDocs
+            .filter(doc => !ids.has(doc.id))
+            .sort((a, b) => new Date(b.date_published).getTime() - new Date(a.date_published).getTime())
+            .slice(0, 6 - featuredDocs.length);
+        featuredDocs = [...featuredDocs, ...fallback];
+    }
 
     return (
         <div className={styles.page}>

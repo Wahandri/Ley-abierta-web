@@ -383,3 +383,64 @@
   color: var(--color-text-muted);
   text-transform: capitalize;
 }
+
+/* ── Botones de acción del documento ── */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btnPrimary,
+.btnSecondary,
+.btnTertiary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, opacity 150ms ease;
+  text-align: center;
+  line-height: 1;
+}
+
+.btnPrimary {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.btnPrimary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+.btnPrimary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btnSecondary {
+  background: var(--color-bg-card);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.btnSecondary:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-text-muted);
+}
+
+.btnTertiary {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-light);
+}
+.btnTertiary:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}

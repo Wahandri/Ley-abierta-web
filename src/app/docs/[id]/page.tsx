@@ -67,17 +67,15 @@ export default async function DocDetailPage({ params }: Props) {
     const relatedDocs = await getRelatedDocs(doc, 3);
     const quickPoints = getQuickPoints(doc, 3);
 
-    const transparencyNotes = [
+    // Solo incluir notas que tienen datos reales
+    const transparencyNotes: string[] = [
         `Fuente oficial: ${doc.source || 'Boletín Oficial del Estado'} (${doc.id}).`,
         doc.updated_at
             ? `Última actualización registrada: ${formatDate(doc.updated_at)}.`
             : `Publicado oficialmente el ${formatDate(doc.date_published)}.`,
-        doc.entry_into_force
-            ? `Entrada en vigor: ${formatDate(doc.entry_into_force)}.`
-            : 'No se indica una fecha de entrada en vigor diferenciada en los metadatos.',
-        doc.changes_summary
-            ? `Cambios clave identificados: ${doc.changes_summary}`
-            : 'No hay resumen de cambios adicional disponible en los datos.'
+        ...(doc.entry_into_force ? [`Entrada en vigor: ${formatDate(doc.entry_into_force)}.`] : []),
+        ...(doc.changes_summary ? [`Cambios clave identificados: ${doc.changes_summary}`] : []),
+        ...(doc.transparency_notes ? [doc.transparency_notes] : []),
     ];
 
     return (
@@ -360,30 +358,14 @@ export default async function DocDetailPage({ params }: Props) {
                             Notas de Transparencia
                         </h3>
                         <ul className={styles.transparencyList}>
-                            <li className={styles.transparencyItem}>
-                                <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                <span>{transparencyNotes[0]}</span>
-                            </li>
-                            <li className={styles.transparencyItem}>
-                                <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                <span>{transparencyNotes[1]}</span>
-                            </li>
-                            <li className={styles.transparencyItem}>
-                                <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                <span>{transparencyNotes[2]}</span>
-                            </li>
-                            <li className={styles.transparencyItem}>
-                                <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                                <span>{transparencyNotes[3]}</span>
-                            </li>
+                            {transparencyNotes.map((note, i) => (
+                                <li key={i} className={styles.transparencyItem}>
+                                    <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    <span>{note}</span>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 

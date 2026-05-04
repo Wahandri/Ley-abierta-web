@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
 import styles from './page.module.css';
 import FiltersPanel from '@/components/FiltersPanel';
+import ExplorerSidebar from '@/components/ExplorerSidebar';
 import DocsTable from '@/components/DocsTable';
 import SortControl from '@/components/SortControl';
 import Skeleton from '@/components/Skeleton';
@@ -16,12 +17,18 @@ interface QueryResult {
     page: number;
     pageSize: number;
     hasMore: boolean;
+    latestDocumentDate?: string | null;
+    oldestDocumentDate?: string | null;
 }
 
 interface FacetsData {
     topic_counts?: Record<string, number>;
     affects_counts?: Record<string, number>;
     impact_counts?: Record<string, number>;
+    type_counts?: Record<string, number>;
+    status_counts?: Record<string, number>;
+    jurisdiction_counts?: Record<string, number>;
+    ministry_counts?: Record<string, number>;
 }
 
 function DocsContent() {
@@ -32,6 +39,9 @@ function DocsContent() {
     const [docs, setDocs] = useState<Document[]>([]);
     const [totalResults, setTotalResults] = useState(0);
     const [facets, setFacets] = useState<FacetsData | undefined>(undefined);
+    const [latestDocumentDate, setLatestDocumentDate] = useState<string | null>(null);
+    const [oldestDocumentDate, setOldestDocumentDate] = useState<string | null>(null);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
@@ -75,6 +85,8 @@ function DocsContent() {
                 setTotalResults(docsData.total);
                 setHasMore(docsData.hasMore);
                 setFacets(facetsData ?? undefined);
+                setLatestDocumentDate(docsData.latestDocumentDate ?? null);
+                setOldestDocumentDate(docsData.oldestDocumentDate ?? null);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Unknown error');
             } finally {
@@ -131,11 +143,24 @@ Listado actualizado de normativa y documentación oficial para ciudadanía y an�
 
             <div className={styles.layout}>
                 <aside className={styles.sidebar}>
-                    <FiltersPanel facets={facets} totalResults={totalResults} />
+                    <ExplorerSidebar 
+                        facets={facets} 
+                        totalResults={totalResults}
+                        latestDocumentDate={latestDocumentDate}
+                        oldestDocumentDate={oldestDocumentDate}
+                        isOpen={sidebarOpen}
+                        onClose={() => setSidebarOpen(false)}
+                    />
                 </aside>
 
                 <div className={styles.main}>
                     <div className={styles.toolbar}>
+                        <button 
+                            className={styles.filterToggle}
+                            onClick={() => setSidebarOpen(true)}
+                        >
+                            Filtros
+                        </button>
                         <div className={styles.resultsInfo}>
                             {totalResults > 0 && (
                                 <>

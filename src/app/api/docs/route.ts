@@ -5,19 +5,28 @@ export async function GET(request: NextRequest) {
     try {
         const searchParams = request.nextUrl.searchParams;
 
-        // Parse affects as comma-separated values for multi-select
-        const affectsParam = searchParams.get('affects');
-        const affectsArray = affectsParam
-            ? affectsParam.split(',').map(a => a.trim()).filter(Boolean)
-            : undefined;
+        // Parse arrays from comma-separated values
+        const parseArrayParam = (param: string | null) => {
+            return param ? param.split(',').map(a => a.trim()).filter(Boolean) : undefined;
+        };
+
+        const typeParam = parseArrayParam(searchParams.get('type'));
+        const statusParam = parseArrayParam(searchParams.get('status'));
+        const jurisdictionParam = parseArrayParam(searchParams.get('jurisdiction'));
+        const ministryParam = parseArrayParam(searchParams.get('ministry'));
+        const affectsParam = parseArrayParam(searchParams.get('affects'));
 
         const options = {
             q: searchParams.get('q') || undefined,
             topic: searchParams.get('topic') || undefined,
-            affects: affectsArray,
+            affects: affectsParam,
             impact: (searchParams.get('impact') as 'low' | 'mid' | 'high') || undefined,
             from: searchParams.get('from') || undefined,
             to: searchParams.get('to') || undefined,
+            type: typeParam,
+            status: statusParam,
+            jurisdiction: jurisdictionParam,
+            ministry: ministryParam,
             page: parseInt(searchParams.get('page') || '1', 10),
             pageSize: parseInt(searchParams.get('pageSize') || '20', 10),
             sortBy: (searchParams.get('sortBy') as 'date' | 'impact') || 'date',

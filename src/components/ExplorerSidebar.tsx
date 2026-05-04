@@ -3,13 +3,17 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './ExplorerSidebar.module.css';
-import { TOPICS, AFFECTED_GROUPS, IMPACT_LEVELS, formatDate } from '@/lib/constants';
+import { TOPICS, AFFECTED_GROUPS, IMPACT_LEVELS, DOCUMENT_TYPES, DOCUMENT_STATUS, JURISDICCIONES, MINISTERIOS, formatDate } from '@/lib/constants';
 
 interface ExplorerSidebarProps {
     facets?: {
         topic_counts?: Record<string, number>;
         affects_counts?: Record<string, number>;
         impact_counts?: Record<string, number>;
+        type_counts?: Record<string, number>;
+        status_counts?: Record<string, number>;
+        jurisdiction_counts?: Record<string, number>;
+        ministry_counts?: Record<string, number>;
     };
     totalResults?: number;
     latestDocumentDate?: string | null;
@@ -34,6 +38,10 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
     const currentFrom = searchParams.get('from') || '';
     const currentTo = searchParams.get('to') || '';
     const currentSort = searchParams.get('sortBy') || 'date';
+    const currentTypes = searchParams.get('type')?.split(',').filter(Boolean) || [];
+    const currentStatus = searchParams.get('status')?.split(',').filter(Boolean) || [];
+    const currentJurisdiction = searchParams.get('jurisdiction')?.split(',').filter(Boolean) || [];
+    const currentMinistry = searchParams.get('ministry')?.split(',').filter(Boolean) || [];
 
     // Update local search state when URL changes (e.g., browser back/forward)
     useEffect(() => {
@@ -138,13 +146,60 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
         updateURL({ affects: newAffects.length > 0 ? newAffects : undefined });
     };
 
+    // Handlers for new filters
+    const handleTypeToggle = (type: string) => {
+        const newTypes = currentTypes.includes(type)
+            ? currentTypes.filter(t => t !== type)
+            : [...currentTypes, type];
+        updateURL({ type: newTypes.length > 0 ? newTypes : undefined });
+    };
+
+    const handleStatusToggle = (status: string) => {
+        const newStatus = currentStatus.includes(status)
+            ? currentStatus.filter(s => s !== status)
+            : [...currentStatus, status];
+        updateURL({ status: newStatus.length > 0 ? newStatus : undefined });
+    };
+
+    const handleJurisdictionChange = (jurisdiction: string) => {
+        updateURL({ jurisdiction: jurisdiction || undefined });
+    };
+
+    const handleMinistryChange = (ministry: string) => {
+        updateURL({ ministry: ministry || undefined });
+    };
+
+    // Quick date buttons
+    const handleQuickDate = (period: string) => {
+        const today = new Date();
+        let fromDate = '';
+
+        if (period === 'week') {
+            const lastWeek = new Date(today);
+            lastWeek.setDate(today.getDate() - 7);
+            fromDate = lastWeek.toISOString().split('T')[0];
+        } else if (period === 'month') {
+            const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            fromDate = firstOfMonth.toISOString().split('T')[0];
+        } else if (period === 'year') {
+            const firstOfYear = new Date(today.getFullYear(), 0, 1);
+            fromDate = firstOfYear.toISOString().split('T')[0];
+        } else if (period === '30days') {
+            const last30 = new Date(today);
+            last30.setDate(today.getDate() - 30);
+            fromDate = last30.toISOString().split('T')[0];
+        }
+
+        updateURL({ from: fromDate, to: undefined });
+    };
+
     const handleClearFilters = () => {
         setSearchQuery('');
         router.push(pathname);
     };
 
-    const hasActiveFilters = !!(searchQuery || currentTopic || currentImpact || currentAffects.length > 0 || currentFrom || currentTo);
-    const activeFilterCount = [currentTopic, currentImpact, currentAffects.length > 0, currentFrom, currentTo].filter(Boolean).length;
+    const hasActiveFilters = !!(searchQuery || currentTopic || currentImpact || currentAffects.length > 0 || currentFrom || currentTo || currentTypes.length > 0 || currentStatus.length > 0 || currentJurisdiction.length > 0 || currentMinistry.length > 0);
+    const activeFilterCount = [currentTopic, currentImpact, currentAffects.length > 0, currentFrom, currentTo, currentTypes.length > 0, currentStatus.length > 0, currentJurisdiction.length > 0, currentMinistry.length > 0].filter(Boolean).length;
 
     return (
         <>
@@ -192,7 +247,7 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
                         id="search-input"
                         type="search"
                         className={styles.searchInput}
-                        placeholder="Título, resumen o palabras clave..."
+                        placeholder="Título, texto, palabras clave, fechas..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         aria-label="Buscar documentos"
@@ -254,6 +309,142 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
                             />
                         </label>
                     </div>
+                    <div className={styles.quickDateButtons}>
+                        <button onClick={() => handleQuickDate('week')} className={styles.quickDateBtn}>Última semana</button>
+                        <button onClick={() => handleQuickDate('month')} className={styles.quickDateBtn}>Este mes</button>
+                        <button onClick={() => handleQuickDate('30days')} className={styles.quickDateBtn}>30 días</button>
+                        <button onClick={() => handleQuickDate('year')} className={styles.quickDateBtn}>Este año</button>
+                    </div>
+                </div>
+
+                {/* Document Type */}
+                <div className={styles.section}>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            Tipo de documento
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            {Object.entries(DOCUMENT_TYPES).map(([key, label]) => (
+                                <label key={key} className={styles.checkboxLabel}>
+                                    <input
+                                        type="checkbox"
+                                        checked={currentTypes.includes(key)}
+                                        onChange={() => handleTypeToggle(key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {label}
+                                        {facets?.type_counts?.[key] !== undefined && (
+                                            <span className={styles.count}>({facets.type_counts[key]})</span>
+                                        )}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
+                </div>
+
+                {/* Status */}
+                <div className={styles.section}>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            Estado
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            {Object.entries(DOCUMENT_STATUS).map(([key, config]) => (
+                                <label key={key} className={styles.checkboxLabel}>
+                                    <input
+                                        type="checkbox"
+                                        checked={currentStatus.includes(key)}
+                                        onChange={() => handleStatusToggle(key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {config.label}
+                                        {facets?.status_counts?.[key] !== undefined && (
+                                            <span className={styles.count}>({facets.status_counts[key]})</span>
+                                        )}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
+                </div>
+
+                {/* Jurisdiction */}
+                <div className={styles.section}>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            Jurisdicción
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            {Object.entries(JURISDICCIONES).map(([key, config]) => (
+                                <label key={key} className={styles.radioLabel}>
+                                    <input
+                                        type="radio"
+                                        name="jurisdiction"
+                                        value={key}
+                                        checked={currentJurisdiction.includes(key)}
+                                        onChange={() => handleJurisdictionChange(key)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {config.label}
+                                        {facets?.jurisdiction_counts?.[key] !== undefined && (
+                                            <span className={styles.count}>({facets.jurisdiction_counts[key]})</span>
+                                        )}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
+                </div>
+
+                {/* Ministry */}
+                <div className={styles.section}>
+                    <details className={styles.accordion} open>
+                        <summary className={styles.accordionSummary}>
+                            Ministerio
+                            <svg className={styles.accordionIcon} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                        </summary>
+                        <div className={styles.scrollableList}>
+                            <label className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="ministry"
+                                    value=""
+                                    checked={currentMinistry.length === 0}
+                                    onChange={() => handleMinistryChange('')}
+                                />
+                                <span className={styles.labelText}>Todos los ministerios</span>
+                            </label>
+                            {MINISTERIOS.map((ministry) => (
+                                <label key={ministry} className={styles.radioLabel}>
+                                    <input
+                                        type="radio"
+                                        name="ministry"
+                                        value={ministry}
+                                        checked={currentMinistry.includes(ministry)}
+                                        onChange={() => handleMinistryChange(ministry)}
+                                    />
+                                    <span className={styles.labelText}>
+                                        {ministry.replace('Ministerio de ', '').replace('Subsecretaría del Ministerio de ', 'Subs. ')}
+                                        {facets?.ministry_counts?.[ministry] !== undefined && (
+                                            <span className={styles.count}>({facets.ministry_counts[ministry]})</span>
+                                        )}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                    </details>
                 </div>
 
                 {/* Topic Accordion */}

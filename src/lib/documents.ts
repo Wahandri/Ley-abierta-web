@@ -51,12 +51,16 @@ export async function getDocById(id: string): Promise<Document | null> {
  * Query documents with filters
  */
 export interface QueryOptions {
-    q?: string; // Search query
+    q?: string; // Search query ( busca en title, summary, keywords, short_title)
     topic?: string;
     affects?: string | string[]; // Support multi-select
     impact?: 'low' | 'mid' | 'high';
     from?: string; // ISO date
     to?: string; // ISO date
+    type?: string | string[]; // Document type filter (ley, real_decreto, orden, resolucion, acuerdo, otro)
+    status?: string | string[]; // Status (vigente, derogada) - inferido de document_intent
+    jurisdiction?: string | string[]; // Geographic scope (nacional, autonomico, internacional, etc.)
+    ministry?: string | string[]; // Ministry (from entities_detected)
     page?: number;
     pageSize?: number;
     sortBy?: 'date' | 'impact';
@@ -83,6 +87,10 @@ export async function queryDocs(options: QueryOptions = {}): Promise<QueryResult
         impact,
         from,
         to,
+        type,
+        status,
+        jurisdiction,
+        ministry,
         page = 1,
         pageSize = 20,
         sortBy = 'date',
@@ -91,14 +99,64 @@ export async function queryDocs(options: QueryOptions = {}): Promise<QueryResult
 
     let filtered = documentsCache || [];
 
-    // Text search (in title, summary, keywords)
+    // Text search (in title, short_title, summary, keywords)
     if (q && q.trim()) {
         const query = q.toLowerCase();
         filtered = filtered.filter(doc => {
-            const inTitle = doc.title_original.toLowerCase().includes(query);
-            const inSummary = doc.summary_plain_es.toLowerCase().includes(query);
-            const inKeywords = doc.keywords.some(k => k.toLowerCase().includes(query));
-            return inTitle || inSummary || inKeywords;
+            const inTitle = (doc.title_original || '').toLowerCase().includes(query);
+            const inShortTitle = (doc.short_title || '').toLowerCase().includes(query);
+            const inSummary = (doc.summary_plain_es || '').toLowerCase().includes(query);
+            const inKeywords = doc.keywords?.some(k => k.toLowerCase().includes(query)) || false;
+            return inTitle || inShortTitle || inSummary || inKeywords;
+        });
+    }
+
+    // Document type filter
+    if (type) {
+        const typeArray = Array.isArray(type) ? type : [type];
+        filtered = filtered.filter(doc => typeArray.includes(doc.type));
+    }
+
+    // Status filter (inferido de document_intent: deroga = derogada, resto = vigente)
+    if (status) {
+        const statusArray = Array.isArray(status) ? status : [status];
+        filtered = filtered.filter(doc => {
+            const docStatus = doc.document_intent === 'deroga' ? 'derogada' : 'vigente';
+            return statusArray.includes(docStatus);
+        });
+    }
+
+    // Jurisdiction filter (geographic_scope or document_scope)
+    if (jurisdiction) {
+        const jurisdictionArray = Array.isArray(jurisdiction) ? jurisdiction : [jurisdiction];
+        filtered = filtered.filter(doc => {
+            const scope = doc.geographic_scope || doc.document_scope;
+            if (!scope) return jurisdictionArray.includes('no_definido');
+            const scopes = Array.isArray(scope) ? scope : [scope];
+            // Normalizar: mapped a labels simples
+            const normalizedScopes = scopes.map(s => {
+                const lower = s.toLowerCase();
+                if (lower.includes('españa') || lower.includes('nacional') || lower.includes('reino')) return 'nacional';
+                if (lower.includes('autonóm') || lower.includes('cc.aa') || lower.includes('comunidad')) return 'autonomico';
+                if (lower.includes('local') || lower.includes('ayto')) return 'local';
+                if (lower.includes('internac')) return 'internacional';
+                if (lower.includes('europe') || lower.includes('ue')) return 'europeo';
+                return 'nacional'; // default
+            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return jurisdictionArray.some((j: any) => normalizedScopes.includes(j));
+        });
+    }
+
+    // Ministry filter (from entities_detected)
+    if (ministry) {
+        const ministryArray = Array.isArray(ministry) ? ministry : [ministry];
+        filtered = filtered.filter(doc => {
+            const entities = doc.entities_detected || [];
+            const docMinisterios = entities
+                .filter(e => e.type === 'organismo' && e.name?.toLowerCase().includes('ministerio'))
+                .map(e => e.name);
+            return ministryArray.some(m => docMinisterios.includes(m));
         });
     }
 
@@ -185,6 +243,10 @@ export interface Facets {
     topic_counts: Record<string, number>;
     affects_counts: Record<string, number>;
     impact_counts: Record<string, number>;
+    type_counts: Record<string, number>;
+    status_counts: Record<string, number>;
+    jurisdiction_counts: Record<string, number>;
+    ministry_counts: Record<string, number>;
 }
 
 export async function getFacets(): Promise<Facets> {
@@ -195,11 +257,49 @@ export async function getFacets(): Promise<Facets> {
     const topic_counts: Record<string, number> = {};
     const affects_counts: Record<string, number> = {};
     const impact_counts = { low: 0, mid: 0, high: 0 };
+    const type_counts: Record<string, number> = {};
+    const status_counts: Record<string, number> = { vigente: 0, derogada: 0 };
+    const jurisdiction_counts: Record<string, number> = {};
+    const ministry_counts: Record<string, number> = {};
 
     for (const doc of docs) {
         // Topic counts
         const topic = doc.topic_primary || 'otros';
         topic_counts[topic] = (topic_counts[topic] || 0) + 1;
+
+        // Type counts
+        const docType = doc.type || 'otro';
+        type_counts[docType] = (type_counts[docType] || 0) + 1;
+
+        // Status counts (inferido de document_intent)
+        const docStatus = doc.document_intent === 'deroga' ? 'derogada' : 'vigente';
+        status_counts[docStatus]++;
+
+        // Jurisdiction counts
+        const scope = doc.geographic_scope || doc.document_scope;
+        if (scope) {
+            const scopes = Array.isArray(scope) ? scope : [scope];
+            scopes.forEach(s => {
+                const lower = s.toLowerCase();
+                let key = 'nacional';
+                if (lower.includes('autonóm') || lower.includes('cc.aa') || lower.includes('comunidad')) key = 'autonomico';
+                else if (lower.includes('internac')) key = 'internacional';
+                else if (lower.includes('europe') || lower.includes('ue')) key = 'europeo';
+                else if (lower.includes('local') || lower.includes('ayto')) key = 'local';
+                jurisdiction_counts[key] = (jurisdiction_counts[key] || 0) + 1;
+            });
+        } else {
+            jurisdiction_counts['no_definido'] = (jurisdiction_counts['no_definido'] || 0) + 1;
+        }
+
+        // Ministry counts
+        const entities = doc.entities_detected || [];
+        const docMinisterios = entities
+            .filter(e => e.type === 'organismo' && e.name?.toLowerCase().includes('ministerio'))
+            .map(e => e.name);
+        docMinisterios.forEach(m => {
+            ministry_counts[m] = (ministry_counts[m] || 0) + 1;
+        });
 
         // Affects counts
         if (doc.affects_to) {
@@ -216,7 +316,11 @@ export async function getFacets(): Promise<Facets> {
     return {
         topic_counts,
         affects_counts,
-        impact_counts
+        impact_counts,
+        type_counts,
+        status_counts,
+        jurisdiction_counts,
+        ministry_counts
     };
 }
 

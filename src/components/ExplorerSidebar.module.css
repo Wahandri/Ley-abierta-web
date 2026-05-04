@@ -362,6 +362,31 @@
     background: #ffffff;
 }
 
+/* Quick Date Buttons */
+.quickDateButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-sm);
+}
+
+.quickDateBtn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.quickDateBtn:hover {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+}
+
 /* Mobile Drawer Logic */
 @media (max-width: 1024px) {
     .sidebar {

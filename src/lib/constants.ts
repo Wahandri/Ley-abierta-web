@@ -2,17 +2,53 @@
  * Constants and type definitions for Ley Abierta
  */
 
-// Document types
+// Document types (basado en datos reales del BOE)
 export const DOCUMENT_TYPES = {
     ley: 'Ley',
     real_decreto: 'Real Decreto',
     orden: 'Orden',
     resolucion: 'Resolución',
-    reglamento: 'Reglamento',
-    circular: 'Circular',
     acuerdo: 'Acuerdo',
-    otros: 'Otros'
+    otro: 'Otro',
+    reglamento: 'Reglamento',
+    circular: 'Circular'
 };
+
+// Document status (basado en document_intent)
+export const DOCUMENT_STATUS = {
+    vigente: { label: 'Vigente', description: 'Normas activas' },
+    derogada: { label: 'Derogada', description: 'Normas derogadas' }
+};
+
+// Jurisdicción (ámbitogeográfico)
+export const JURISDICCIONES = {
+    nacional: { label: 'Nacional', badge: 'España' },
+    autonomico: { label: 'Autonómico', badge: 'CC.AA' },
+    local: { label: 'Local', badge: 'Ayto.' },
+    internacional: { label: 'Internacional', badge: 'Int.' },
+    europeo: { label: 'Europeo', badge: 'UE' }
+};
+
+// Ministerios (extraídos de entities_detected en datos reales)
+export const MINISTERIOS = [
+    'Ministerio de Agricultura, Pesca y Alimentación',
+    'Ministerio de Asuntos Exteriores, Unión Europea y Cooperación',
+    'Ministerio de Defensa',
+    'Ministerio de Derechos Sociales, Consumo y Agenda 2030',
+    'Ministerio de Economía, Comercio y Empresa',
+    'Ministerio de Educación, Formación Profesional y Deportes',
+    'Ministerio de Hacienda',
+    'Ministerio de Inclusión, Seguridad Social y Migraciones',
+    'Ministerio de Industria y Turismo',
+    'Ministerio de Política Territorial y Memoria Democrática',
+    'Ministerio de Sanidad',
+    'Ministerio de Transición Ecológica y el Reto Demográfico',
+    'Ministerio de Transportes y Movilidad Sostenible',
+    'Ministerio de Vivienda y Agenda Urbana',
+    'Ministerio de la Presidencia, Justicia y Relaciones con las Cortes',
+    'Ministerio para la Transición Ecológica y el Reto Demográfico',
+    'Subsecretaría del Ministerio de la Presidencia, Justicia y Relaciones con las Cortes'
+];
 
 // Document intents
 export const DOCUMENT_INTENT_LABELS: Record<string, { label: string, color: string, icon: string }> = {

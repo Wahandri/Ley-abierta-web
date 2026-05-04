@@ -64,7 +64,7 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--color-bg-secondary);
     border: 1px solid var(--color-border);
     border-radius: 8px;
     color: var(--color-primary);
@@ -76,7 +76,7 @@
 
 .githubLink:hover,
 .portfolioLink:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--color-bg-hover);
     border-color: var(--color-primary);
     transform: translateY(-2px);
 }
@@ -86,8 +86,8 @@
 }
 
 .infoBox {
-    background-color: rgba(88, 101, 242, 0.1);
-    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary-soft);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
     border-radius: 8px;
     padding: 1.5rem;
     margin-top: 2rem;
@@ -101,6 +101,20 @@
 .infoBox p {
     color: var(--color-text-muted);
     margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 1.25rem 1rem;
+    }
+
+    .content {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
 }
 
 @media (min-width: 1024px) {

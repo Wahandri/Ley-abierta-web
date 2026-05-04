@@ -100,7 +100,7 @@
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
     background-color: var(--color-bg-alt);
-    color: #0f172a;
+    color: var(--color-text);
     font-family: inherit;
     transition: all var(--transition-fast);
 }
@@ -113,7 +113,7 @@
 }
 
 .searchInput::placeholder {
-    color: #475569;
+    color: var(--color-text-muted);
 }
 
 /* Clear Filters */
@@ -358,8 +358,8 @@
     font-size: var(--font-size-sm);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    color: #0f172a;
-    background: #ffffff;
+    color: var(--color-text);
+    background: var(--color-bg-card);
 }
 
 /* Quick Date Buttons */

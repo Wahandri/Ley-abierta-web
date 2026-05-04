@@ -69,6 +69,20 @@
     margin-top: 2rem;
 }
 
+@media (max-width: 640px) {
+    .container {
+        padding: 1.25rem 1rem;
+    }
+
+    .content {
+        padding: 1.5rem;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+}
+
 @media (min-width: 1024px) {
     .container {
         padding: 3rem 2rem;

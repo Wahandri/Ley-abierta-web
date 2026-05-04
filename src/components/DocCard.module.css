@@ -80,9 +80,9 @@
   background: color-mix(in srgb, var(--intent-color) 12%, transparent);
 }
 
-.status-nuevo { color: #166534; background: rgba(22, 163, 74, 0.12); }
-.status-modifica { color: #92400e; background: rgba(245, 158, 11, 0.16); }
-.status-deroga { color: #991b1b; background: rgba(220, 38, 38, 0.14); }
+.status-nuevo { color: var(--color-impact-low); background: var(--color-impact-low-bg); }
+.status-modifica { color: var(--color-impact-mid); background: var(--color-impact-mid-bg); }
+.status-deroga { color: var(--color-impact-high); background: var(--color-impact-high-bg); }
 
 .cardMeta {
   display: flex;

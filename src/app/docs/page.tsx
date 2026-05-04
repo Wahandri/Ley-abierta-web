@@ -128,17 +128,19 @@ function DocsContent() {
 
     return (
         <div className={styles.page}>
-            <div className={styles.header}>
-                <h1 className={styles.title}>Explorador documental</h1>
-                <p className={styles.subtitle}>
-                    Consulta leyes y documentos públicos en lenguaje claro
-                </p>
-            </div>
+            <div className={styles.pageHeaderWrapper}>
+                <div className={styles.header}>
+                    <h1 className={styles.title}>Explorador documental</h1>
+                    <p className={styles.subtitle}>
+                        Consulta leyes y documentos públicos en lenguaje claro
+                    </p>
+                </div>
 
-            <div className={styles.searchSection}>
-                <p className={styles.introText}>
-Listado actualizado de normativa y documentación oficial para ciudadanía y análisis.
-                </p>
+                <div className={styles.searchSection}>
+                    <p className={styles.introText}>
+                        Listado actualizado de normativa y documentación oficial para ciudadanía y análisis.
+                    </p>
+                </div>
             </div>
 
             <div className={styles.layout}>

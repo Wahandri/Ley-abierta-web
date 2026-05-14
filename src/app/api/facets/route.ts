@@ -1,8 +1,20 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getFacets } from '@/lib/documents';
 
-export async function GET() {
+const BOE_API_URL = process.env.BOE_API_URL;
+
+export async function GET(request: NextRequest) {
     try {
+        if (BOE_API_URL) {
+            const response = await fetch(`${BOE_API_URL}/boe/facets`, {
+                next: { revalidate: 300 }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return NextResponse.json(data);
+            }
+        }
+
         const facets = await getFacets();
         return NextResponse.json(facets);
     } catch (error) {

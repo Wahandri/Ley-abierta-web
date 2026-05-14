@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { queryDocs } from '@/lib/documents';
 
+const BOE_API_URL = process.env.BOE_API_URL;
+
 export async function GET(request: NextRequest) {
     try {
+        if (BOE_API_URL) {
+            const params = request.nextUrl.searchParams.toString();
+            const response = await fetch(`${BOE_API_URL}/boe/docs${params ? '?' + params : ''}`, {
+                next: { revalidate: 60 }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                return NextResponse.json(data);
+            }
+        }
+
         const searchParams = request.nextUrl.searchParams;
 
-        // Parse arrays from comma-separated values
         const parseArrayParam = (param: string | null) => {
             return param ? param.split(',').map(a => a.trim()).filter(Boolean) : undefined;
         };
@@ -34,7 +46,6 @@ export async function GET(request: NextRequest) {
         };
 
         const result = await queryDocs(options);
-
         return NextResponse.json(result);
     } catch (error) {
         console.error('Error in /api/docs:', error);

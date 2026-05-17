@@ -1,128 +1,114 @@
 .container {
-    min-height: 100vh;
-    padding: 2rem 1.5rem;
-    max-width: 800px;
-    margin: 0 auto;
+  min-height: 100vh;
+  padding: var(--space-2xl) var(--space-lg);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .content {
-    background-color: var(--glass-bg);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 2.5rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
 }
 
 .title {
-    font-size: 2.5rem;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--color-primary);
+  font-size: clamp(1.75rem, 1.5rem + 1vw, 2rem);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-primary);
+  letter-spacing: -0.02em;
 }
 
 .section {
-    margin-bottom: 2.5rem;
+  margin-bottom: var(--space-2xl);
 }
 
 .section h2 {
-    font-size: 1.5rem;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text);
-    margin-bottom: 1rem;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.01em;
 }
 
 .section h3 {
-    font-size: 1.2rem;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text);
-    margin-bottom: 0.75rem;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-sm);
 }
 
 .section p {
-    font-size: var(--font-size-base);
-    line-height: 1.7;
-    color: var(--color-text-muted);
-    margin-bottom: 0.75rem;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
 }
 
 .section ul {
-    margin: 1rem 0 1rem 1.5rem;
-    color: var(--color-text-muted);
+  margin: var(--space-md) 0 var(--space-md) var(--space-lg);
+  color: var(--color-text-secondary);
 }
 
 .section li {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-normal);
 }
 
 .githubLink,
 .portfolioLink {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    background-color: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    color: var(--color-primary);
-    text-decoration: none;
-    font-weight: var(--font-weight-medium);
-    transition: all var(--transition-fast);
-    margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+  margin-top: var(--space-xs);
 }
 
 .githubLink:hover,
 .portfolioLink:hover {
-    background-color: var(--color-bg-hover);
-    border-color: var(--color-primary);
-    transform: translateY(-2px);
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .githubLink svg {
-    color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .infoBox {
-    background-color: var(--color-primary-soft);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-top: 2rem;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-top: var(--space-xl);
 }
 
 .infoBox h3 {
-    color: var(--color-primary);
-    margin-bottom: 0.75rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
 }
 
 .infoBox p {
-    color: var(--color-text-muted);
-    margin-bottom: 0;
+  color: var(--color-text-secondary);
+  margin-bottom: 0;
+  font-size: var(--font-size-sm);
 }
 
 @media (max-width: 640px) {
-    .container {
-        padding: 1.25rem 1rem;
-    }
+  .container {
+    padding: var(--space-lg) var(--space-md);
+  }
 
-    .content {
-        padding: 1.5rem;
-    }
-
-    .title {
-        font-size: 1.75rem;
-    }
-}
-
-@media (min-width: 1024px) {
-    .container {
-        padding: 3rem 2rem;
-    }
-
-    .content {
-        padding: 3.5rem;
-    }
+  .content {
+    padding: var(--space-lg);
+  }
 }

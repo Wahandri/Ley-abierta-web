@@ -1,6 +1,5 @@
 .page {
   min-height: 100vh;
-  background-color: var(--color-bg);
 }
 
 .pageHeaderWrapper {
@@ -11,7 +10,7 @@
 
 .layout {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
+  grid-template-columns: 300px minmax(0, 1fr);
   gap: var(--space-xl);
   max-width: 1320px;
   margin: 0 auto;
@@ -21,9 +20,10 @@
 
 .sidebar {
   position: sticky;
-  top: 96px;
-  height: calc(100vh - 96px);
+  top: 88px;
+  height: calc(100vh - 88px);
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .main {
@@ -35,9 +35,10 @@
 }
 
 .title {
-  font-size: clamp(1.8rem, 1.6rem + 1vw, 2rem);
+  font-size: clamp(1.5rem, 1.4rem + 1vw, 1.75rem);
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-xs);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
@@ -53,6 +54,7 @@
   font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   max-width: 72ch;
+  line-height: var(--line-height-normal);
 }
 
 .toolbar {
@@ -66,23 +68,26 @@
 .filterToggle {
   display: none;
   padding: var(--space-sm) var(--space-md);
-  background-color: var(--color-primary);
-  color: var(--color-bg);
+  background: var(--color-primary);
+  color: #fff;
   border: none;
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
+  font-family: inherit;
 }
 
 .filterToggle:hover {
-  background-color: var(--color-primary-hover);
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
 }
 
 .resultsInfo {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
+  font-feature-settings: 'tnum';
 }
 
 .grid {
@@ -102,6 +107,7 @@
 
   .sidebar {
     position: static;
+    height: auto;
   }
 
   .filterToggle {

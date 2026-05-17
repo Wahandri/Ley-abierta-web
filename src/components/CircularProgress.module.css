@@ -1,64 +1,66 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
 }
 
 .label {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--color-text-secondary);
-    text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 .circleWrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .svg {
-    transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }
 
 .circleBackground {
-    color: var(--color-border);
-    opacity: 0.2;
+  color: var(--color-border);
+  opacity: 0.15;
 }
 
 .circleProgress {
-    color: var(--color-accent);
-    transition: stroke-dashoffset 1s ease;
+  color: var(--color-primary);
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 6px var(--color-primary-glow));
 }
 
 .scoreWrapper {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .score {
-    font-size: 3.5rem;
-    font-weight: var(--font-weight-bold);
-    color: var(--color-text);
-    line-height: 1;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .scoreLabel {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
-    margin-top: var(--space-2xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2xs);
 }
 
 .impactLabel {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text-secondary);
-    text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-align: center;
 }

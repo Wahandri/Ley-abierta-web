@@ -1,85 +1,120 @@
 .page {
-    min-height: 100vh;
-    background-color: var(--color-bg);
-    background-image: radial-gradient(circle at top left, var(--color-primary-soft), transparent 45%);
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .content {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: var(--space-3xl) var(--space-lg) var(--space-3xl);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-lg) var(--space-3xl);
 }
 
 .header {
-    text-align: center;
-    margin-bottom: var(--space-2xl);
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+  animation: slideUp 0.5s ease-out;
 }
 
 .title {
-    font-size: var(--font-size-4xl);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-sm);
-    background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary-light) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+  font-size: clamp(var(--font-size-3xl), 2.5rem + 1vw, var(--font-size-4xl));
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-sm);
+  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-primary-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
-    max-width: 720px;
-    margin: 0 auto;
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: var(--line-height-normal);
 }
 
 .section {
-    background-color: var(--color-bg-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-2xl);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: var(--space-xl);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-xl);
+  transition: border-color var(--transition-fast);
+}
+
+.section:hover {
+  border-color: var(--color-border-dark);
 }
 
 .sectionTitle {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-sm);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.01em;
+}
+
+.section p {
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-md);
 }
 
 .list {
-    margin: 0;
-    padding-left: var(--space-lg);
-    color: var(--color-text);
+  margin: 0;
+  padding-left: var(--space-lg);
+  color: var(--color-text-secondary);
 }
 
 .list li {
-    margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  line-height: var(--line-height-normal);
+}
+
+.list li::marker {
+  color: var(--color-primary);
 }
 
 .note {
-    background: var(--color-bg-secondary);
-    border-left: 4px solid var(--color-accent);
-    padding: var(--space-lg);
-    border-radius: var(--radius-md);
+  background: var(--color-bg-alt);
+  border-left: 3px solid var(--color-primary);
+  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-lg);
+}
+
+.note p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
 }
 
 .signature {
-    text-align: center;
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
-    margin-top: var(--space-xl);
+  text-align: center;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  margin-top: var(--space-xl);
+  font-size: var(--font-size-sm);
 }
 
 @media (max-width: 768px) {
-    .content {
-        padding: var(--space-2xl) var(--space-md);
-    }
+  .content {
+    padding: var(--space-2xl) var(--space-md);
+  }
 
-    .title {
-        font-size: var(--font-size-3xl);
-    }
-
-    .section {
-        padding: var(--space-xl);
-    }
+  .section {
+    padding: var(--space-lg);
+  }
 }

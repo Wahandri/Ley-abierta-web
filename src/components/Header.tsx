@@ -36,12 +36,12 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <Link href="/" className={styles.logoWrapper}>
+        <Link href="/" className={styles.logoWrapper} aria-label="Ley Abierta - Inicio">
           <img src="/logo.png" alt="Ley Abierta" className={styles.logo} />
         </Link>
 
         <button
-          className={styles.hamburger}
+          className={`${styles.hamburger} ${mobileMenuOpen ? styles.hamburgerOpen : ''}`}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Menú"
           aria-expanded={mobileMenuOpen}

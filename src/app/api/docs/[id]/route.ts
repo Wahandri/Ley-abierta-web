@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDocById } from '@/lib/documents';
 
 const BOE_API_URL = process.env.BOE_API_URL;
+const BOE_API_KEY = process.env.BOE_API_KEY || '';
 
 export async function GET(
     request: NextRequest,
@@ -11,7 +12,10 @@ export async function GET(
         const { id } = await params;
 
         if (BOE_API_URL) {
+            const headers: Record<string, string> = {};
+            if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
             const response = await fetch(`${BOE_API_URL}/boe/docs/${id}`, {
+                headers,
                 next: { revalidate: 300 }
             });
             if (response.ok) {

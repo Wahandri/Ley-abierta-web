@@ -3,15 +3,15 @@
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--color-border);
-  background-color: color-mix(in srgb, var(--color-bg-card) 92%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  min-height: 72px;
+  min-height: 64px;
   padding: 0 var(--space-lg);
   display: flex;
   align-items: center;
@@ -22,106 +22,160 @@
 .logoWrapper {
   display: inline-flex;
   align-items: center;
+  transition: opacity var(--transition-fast);
+}
+
+.logoWrapper:hover {
+  opacity: 0.85;
 }
 
 .logo {
-  width: clamp(180px, 22vw, 280px);
+  width: clamp(160px, 20vw, 240px);
+  height: auto;
   object-fit: contain;
 }
 
 .nav {
   display: none;
   align-items: center;
-  gap: var(--space-xl);
+  gap: var(--space-2xs);
 }
 
 .navLink {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
-  padding: var(--space-xs) 0;
-  border-bottom: 2px solid transparent;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  position: relative;
 }
 
-.navLink:hover,
-.navLinkActive {
+.navLink:hover {
   color: var(--color-text);
+  background: var(--color-bg-hover);
 }
 
 .navLinkActive {
-  border-bottom-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.navLinkActive:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
 }
 
 .themeToggle {
-  width: 72px;
-  height: 36px;
+  width: 64px;
+  height: 32px;
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
   background: var(--color-bg-secondary);
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
+  padding: 0 8px;
   position: relative;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.themeToggle:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
 }
 
 .themeLabel {
-  font-size: 14px;
+  font-size: 12px;
   position: relative;
   z-index: 1;
+  line-height: 1;
 }
 
 .thumb {
   position: absolute;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   left: 3px;
   transition: transform var(--transition-base);
+  box-shadow: var(--shadow-sm);
 }
 
 .thumbDark {
-  transform: translateX(36px);
+  transform: translateX(32px);
 }
 
 .hamburger {
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 0.25rem;
+  gap: 5px;
+  padding: 6px;
   border: none;
   background: transparent;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.hamburger:hover {
+  background: var(--color-bg-hover);
 }
 
 .hamburger span {
+  display: block;
   width: 20px;
   height: 2px;
   background: var(--color-text);
+  border-radius: 2px;
+  transition: all var(--transition-base);
+  transform-origin: center;
+}
+
+.hamburgerOpen span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburgerOpen span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburgerOpen span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
 @media (max-width: 767px) {
   .nav {
     position: fixed;
-    top: 72px;
-    left: 0;
-    right: 0;
+    top: 64px;
+    left: var(--space-md);
+    right: var(--space-md);
     background: var(--color-bg-card);
-    border-bottom: 1px solid var(--color-border);
-    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-md);
     flex-direction: column;
-    align-items: flex-start;
-    transform: translateY(-120%);
+    align-items: stretch;
+    gap: var(--space-2xs);
+    transform: translateY(-8px);
     opacity: 0;
-    transition: transform var(--transition-base), opacity var(--transition-base);
+    visibility: hidden;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-lg);
   }
 
   .navOpen {
     transform: translateY(0);
     opacity: 1;
-    display: flex;
+    visibility: visible;
+  }
+
+  .navLink {
+    padding: var(--space-sm) var(--space-md);
   }
 }
 

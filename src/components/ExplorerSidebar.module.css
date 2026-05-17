@@ -314,6 +314,10 @@
   gap: var(--space-xs);
 }
 
+.dateLabel {
+  display: block;
+}
+
 .dateRange {
   display: grid;
   grid-template-columns: 1fr;

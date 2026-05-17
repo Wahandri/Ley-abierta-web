@@ -3,7 +3,6 @@
 import { useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense, useRef, useCallback } from 'react';
 import styles from './page.module.css';
-import FiltersPanel from '@/components/FiltersPanel';
 import ExplorerSidebar from '@/components/ExplorerSidebar';
 import DocsTable from '@/components/DocsTable';
 import SortControl from '@/components/SortControl';

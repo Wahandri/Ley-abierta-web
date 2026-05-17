@@ -1,167 +1,204 @@
-import Link from 'next/link';
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import styles from './page.module.css';
+import ExplorerSidebar from '@/components/ExplorerSidebar';
 import DocCard from '@/components/DocCard';
-import { getAllDocs } from '@/lib/documents';
-import { TOPICS } from '@/lib/constants';
+import SortControl from '@/components/SortControl';
+import EmptyState from '@/components/EmptyState';
+import { Document } from '@/lib/jsonl';
 
-const TOPIC_ICONS: Record<string, string> = {
-    economia: '💰',
-    vivienda: '🏠',
-    sanidad: '🏥',
-    educacion: '📚',
-    empleo: '💼',
-    justicia: '⚖️',
-    medio_ambiente: '🌿',
-    transporte: '🚌',
-    cultura: '🎭',
-    tecnologia: '💻',
-    defensa: '🛡️',
-    seguridad: '🔒',
-    agricultura: '🌾',
-    industria: '🏭',
-    comercio: '🏪',
-    turismo: '✈️',
-    otros: '📋',
-};
+interface QueryResult {
+  docs: Document[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+  latestDocumentDate?: string | null;
+  oldestDocumentDate?: string | null;
+}
 
-export default async function HomePage() {
-    const allDocs = await getAllDocs();
+interface FacetsData {
+  topic_counts?: Record<string, number>;
+  affects_counts?: Record<string, number>;
+  impact_counts?: Record<string, number>;
+  type_counts?: Record<string, number>;
+  status_counts?: Record<string, number>;
+  jurisdiction_counts?: Record<string, number>;
+  ministry_counts?: Record<string, number>;
+}
 
-    const totalDocs = allDocs.length;
-    const highImpactCount = allDocs.filter(d => (d.impact_index?.score ?? 0) >= 70).length;
+function HomeContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-    // Ventana de 30 días desde hoy
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [docs, setDocs] = useState<Document[]>([]);
+  const [totalResults, setTotalResults] = useState(0);
+  const [facets, setFacets] = useState<FacetsData | undefined>(undefined);
+  const [latestDate, setLatestDate] = useState<string | null>(null);
+  const [oldestDate, setOldestDate] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    // Usar `overall` (schema v2/2026) con fallback a `score` (schema v1/2025 y anteriores)
-    const getImpact = (doc: (typeof allDocs)[0]) =>
-        doc.impact_index?.overall ?? doc.impact_index?.score ?? 0;
+  const observer = useRef<IntersectionObserver | null>(null);
 
-    // Destacados recientes: últimos 30 días, impacto ≥ 40, ordenados por impacto desc
-    let featuredDocs = allDocs
-        .filter(doc => new Date(doc.date_published) >= thirtyDaysAgo && getImpact(doc) >= 40)
-        .sort((a, b) => getImpact(b) - getImpact(a))
-        .slice(0, 6);
+  const lastDocRef = useCallback((node: HTMLDivElement | null) => {
+    if (loading || loadingMore) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(p => p + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, loadingMore, hasMore]);
 
-    // Si no hay suficientes, rellenar con los más recientes de todo el archivo
-    if (featuredDocs.length < 6) {
-        const ids = new Set(featuredDocs.map(d => d.id));
-        const fallback = allDocs
-            .filter(doc => !ids.has(doc.id))
-            .sort((a, b) => new Date(b.date_published).getTime() - new Date(a.date_published).getTime())
-            .slice(0, 6 - featuredDocs.length);
-        featuredDocs = [...featuredDocs, ...fallback];
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      setPage(1);
+      try {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('page', '1');
+        const [docsRes, facetsRes] = await Promise.all([
+          fetch(`/api/docs?${params}`),
+          fetch('/api/facets'),
+        ]);
+        if (!docsRes.ok) throw new Error('Error al cargar documentos');
+        if (!facetsRes.ok) throw new Error('Error al cargar facetas');
+        const data: QueryResult = await docsRes.json();
+        const facetsData = await facetsRes.json();
+        setDocs(data.docs);
+        setTotalResults(data.total);
+        setHasMore(data.hasMore);
+        setFacets(facetsData ?? undefined);
+        setLatestDate(data.latestDocumentDate ?? null);
+        setOldestDate(data.oldestDocumentDate ?? null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [searchParams]);
 
-    return (
-        <div className={styles.page}>
+  useEffect(() => {
+    if (page === 1) return;
+    const loadMore = async () => {
+      setLoadingMore(true);
+      try {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('page', page.toString());
+        const res = await fetch(`/api/docs?${params}`);
+        if (!res.ok) throw new Error('Error');
+        const data: QueryResult = await res.json();
+        setDocs(prev => [...prev, ...data.docs]);
+        setHasMore(data.hasMore);
+      } catch {
+        // silent
+      } finally {
+        setLoadingMore(false);
+      }
+    };
+    loadMore();
+  }, [page, searchParams]);
 
-            {/* ── Hero ── */}
-            <section className={styles.hero}>
-                <div className={styles.heroInner}>
-                    <div className={styles.heroBadge}>Leyes del BOE en lenguaje ciudadano</div>
-                    <h1 className={styles.heroTitle}>
-                        Entiende las leyes<br />
-                        <span className={styles.heroAccent}>que te afectan</span>
-                    </h1>
-                    <p className={styles.heroSubtitle}>
-                        {totalDocs.toLocaleString('es-ES')} documentos legislativos explicados de forma clara.
-                        Sin tecnicismos. Sin letra pequeña.
-                    </p>
-                    <div className={styles.heroCTAs}>
-                        <Link href="/docs" className={styles.ctaPrimary}>
-                            Explorar documentos
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                                <path d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
-                        </Link>
-                        <Link href="/como-funciona" className={styles.ctaSecondary}>
-                            Cómo funciona
-                        </Link>
-                    </div>
-                </div>
-            </section>
+  const skeletonArray = Array.from({ length: 8 }, (_, i) => i);
 
-            {/* ── Stats ── */}
-            <section className={styles.statsSection} aria-label="Estadísticas">
-                <div className={styles.statsContainer}>
-                    <div className={styles.statItem}>
-                        <span className={styles.statValue}>{totalDocs.toLocaleString('es-ES')}</span>
-                        <span className={styles.statLabel}>documentos</span>
-                    </div>
-                    <div className={styles.statDivider} aria-hidden="true" />
-                    <div className={styles.statItem}>
-                        <span className={styles.statValue}>22</span>
-                        <span className={styles.statLabel}>años de legislación</span>
-                    </div>
-                    <div className={styles.statDivider} aria-hidden="true" />
-                    <div className={styles.statItem}>
-                        <span className={styles.statValue}>{highImpactCount.toLocaleString('es-ES')}</span>
-                        <span className={styles.statLabel}>de alto impacto</span>
-                    </div>
-                    <div className={styles.statDivider} aria-hidden="true" />
-                    <div className={styles.statItem}>
-                        <span className={styles.statValue}>{Object.keys(TOPICS).length}</span>
-                        <span className={styles.statLabel}>áreas temáticas</span>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Topics ── */}
-            <section className={styles.topicsSection}>
-                <div className={styles.sectionContainer}>
-                    <div className={styles.sectionHeader}>
-                        <h2 className={styles.sectionTitle}>Explora por tema</h2>
-                        <p className={styles.sectionSubtitle}>Encuentra las leyes que más te interesan</p>
-                    </div>
-                    <div className={styles.topicsGrid}>
-                        {Object.entries(TOPICS).map(([key, label]) => (
-                            <Link key={key} href={`/docs?topic=${key}`} className={styles.topicCard}>
-                                <span className={styles.topicIcon} aria-hidden="true">{TOPIC_ICONS[key]}</span>
-                                <span className={styles.topicLabel}>{label}</span>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Featured docs ── */}
-            <section className={styles.featuredSection}>
-                <div className={styles.sectionContainer}>
-                    <div className={styles.sectionHeaderRow}>
-                        <div>
-                            <h2 className={styles.sectionTitle}>Documentos destacados recientes</h2>
-                            <p className={styles.sectionSubtitle}>Los de mayor impacto publicados recientemente</p>
-                        </div>
-                        <Link href="/docs?sortBy=impact&sortOrder=desc" className={styles.seeAllLink}>
-                            Ver todos →
-                        </Link>
-                    </div>
-                    <div className={styles.docsGrid}>
-                        {featuredDocs.map(doc => (
-                            <DocCard key={doc.id} doc={doc} />
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* ── Bottom CTA ── */}
-            <section className={styles.ctaSection}>
-                <div className={styles.ctaInner}>
-                    <h2 className={styles.ctaTitle}>¿Buscas una ley en concreto?</h2>
-                    <p className={styles.ctaText}>
-                        Usa el explorador completo con búsqueda por texto, tema, impacto y fecha.
-                    </p>
-                    <Link href="/docs" className={styles.ctaPrimary}>
-                        Ir al explorador
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                            <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                    </Link>
-                </div>
-            </section>
-
+  return (
+    <div className={styles.page}>
+      <div className={styles.topBar}>
+        <div className={styles.topBarInner}>
+          <div className={styles.brand}>
+            <img src="/logo.png" alt="Ley Abierta" className={styles.logo} />
+            <div className={styles.stats}>
+              <span className={styles.stat}>
+                <strong>{totalResults.toLocaleString()}</strong> documentos
+              </span>
+              <span className={styles.statDot}>·</span>
+              <span className={styles.stat}>22 años de legislación</span>
+            </div>
+          </div>
+          <div className={styles.topActions}>
+            <button
+              className={styles.filterBtn}
+              onClick={() => setSidebarOpen(true)}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="8" y1="12" x2="20" y2="12" />
+                <line x1="12" y1="18" x2="20" y2="18" />
+              </svg>
+              Filtros
+            </button>
+            <SortControl />
+          </div>
         </div>
-    );
+      </div>
+
+      <div className={styles.layout}>
+        <aside className={styles.sidebar}>
+          <ExplorerSidebar
+            facets={facets}
+            totalResults={totalResults}
+            latestDocumentDate={latestDate}
+            oldestDocumentDate={oldestDate}
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+        </aside>
+
+        <main className={styles.main}>
+          {loading && docs.length === 0 && (
+            <div className={styles.grid}>
+              {skeletonArray.map(i => (
+                <div key={i} className={styles.skeleton}>Cargando...</div>
+              ))}
+            </div>
+          )}
+
+          {!loading && error && <EmptyState message="Error" suggestion={error} />}
+          {!loading && !error && docs.length === 0 && <EmptyState />}
+
+          {docs.length > 0 && (
+            <>
+              <div className={styles.grid}>
+                {docs.map(doc => (
+                  <DocCard key={doc.id} doc={doc} />
+                ))}
+              </div>
+              {hasMore && (
+                <div ref={lastDocRef} className={styles.sentinel}>
+                  {loadingMore && <span className={styles.loadingMore}>Cargando más...</span>}
+                </div>
+              )}
+              {!hasMore && docs.length > 0 && (
+                <p className={styles.endMsg}>Todos los documentos cargados</p>
+              )}
+            </>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+        Cargando...
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
+  );
 }

@@ -21,7 +21,7 @@ export default function Header() {
 
   const pathname = usePathname();
   const isHome = pathname === '/';
-  const isDocs = pathname === '/docs';
+  const isDashboard = pathname === '/dashboard';
   const isComoFunciona = pathname === '/como-funciona';
 
   useEffect(() => {
@@ -55,8 +55,11 @@ export default function Header() {
           <Link href="/" className={`${styles.navLink} ${isHome ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
             Inicio
           </Link>
-          <Link href="/docs" className={`${styles.navLink} ${isDocs ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
+          <Link href="/" className={`${styles.navLink} ${isHome ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
             Explorador
+          </Link>
+          <Link href="/dashboard" className={`${styles.navLink} ${isDashboard ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
+            Dashboard
           </Link>
           <Link
             href="/como-funciona"

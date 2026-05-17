@@ -57,7 +57,7 @@ export function calculateHeuristics(docs: Document[]): Heuristics | null {
     let newestDateStr: string | null = null;
     
     docs.forEach(d => {
-        const score = d.impact_index?.score || 0;
+        const score = d.impact_index?.overall ?? d.impact_index?.score ?? 0;
         totalScore += score;
         if (score >= 70) highImpactCount++;
         
@@ -77,8 +77,8 @@ export function calculateHeuristics(docs: Document[]): Heuristics | null {
     // 4. Featured doc (highest score, tie break by date)
     let featuredDoc = docs[0];
     docs.forEach(d => {
-        const currentScore = d.impact_index?.score || 0;
-        const featuredScore = featuredDoc.impact_index?.score || 0;
+        const currentScore = d.impact_index?.overall ?? d.impact_index?.score ?? 0;
+        const featuredScore = featuredDoc.impact_index?.overall ?? featuredDoc.impact_index?.score ?? 0;
         
         if (currentScore > featuredScore) {
             featuredDoc = d;

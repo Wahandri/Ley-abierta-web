@@ -2,6 +2,8 @@
  * Constants and type definitions for Ley Abierta
  */
 
+import { Document } from './jsonl';
+
 // Document types (basado en datos reales del BOE)
 export const DOCUMENT_TYPES = {
     ley: 'Ley',
@@ -191,8 +193,6 @@ export function truncate(text: string, maxLength: number): string {
  * Get display title from document
  * Uses the first sentence of the summary if available, otherwise original title
  */
-import { Document } from './jsonl';
-
 export function getDisplayTitle(doc: Document): string {
     // Prioritize manual short title if available
     if (doc.short_title && doc.short_title.length > 5) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import styles from '@/app/docs/[id]/page.module.css';
+import styles from './DetailActions.module.css';
 
 interface DetailActionsProps {
     urlOficial?: string;

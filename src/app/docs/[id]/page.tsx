@@ -66,6 +66,7 @@ export default async function DocDetailPage({ params }: Props) {
 
     const relatedDocs = await getRelatedDocs(doc, 3);
     const quickPoints = getQuickPoints(doc, 3);
+    const intentDetails = getIntentDetails(doc.document_intent);
 
     // Solo incluir notas que tienen datos reales
     const transparencyNotes: string[] = [
@@ -94,10 +95,10 @@ export default async function DocDetailPage({ params }: Props) {
                         <div className={styles.categoryBadge}>
                             {getTopicLabel(doc.topic_primary).toUpperCase()}
                         </div>
-                        {doc.document_intent && getIntentDetails(doc.document_intent) && (
-                            <div className={styles.intentBadge} style={{ '--intent-color': getIntentDetails(doc.document_intent)!.color } as React.CSSProperties}>
-                                <span>{getIntentDetails(doc.document_intent)!.icon}</span>
-                                <span>{getIntentDetails(doc.document_intent)!.label}</span>
+                        {intentDetails && (
+                            <div className={styles.intentBadge} style={{ '--intent-color': intentDetails.color } as React.CSSProperties}>
+                                <span>{intentDetails.icon}</span>
+                                <span>{intentDetails.label}</span>
                             </div>
                         )}
                         {doc.document_scope && (

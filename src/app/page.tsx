@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 import ExplorerSidebar from '@/components/ExplorerSidebar';
 import DocCard from '@/components/DocCard';
@@ -31,7 +30,6 @@ interface FacetsData {
 }
 
 function HomeContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(true);

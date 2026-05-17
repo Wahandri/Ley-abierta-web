@@ -225,14 +225,14 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
                     </button>
                 </div>
 
-                {/* Green Box: Results & Date */}
-                <div className={styles.greenBox}>
-                    <h3 className={styles.greenBoxTitle}>Documentos legislativos</h3>
-                    <div className={styles.greenBoxCount}>
-                        {totalResults.toLocaleString()} <span className={styles.greenBoxLabel}>resultados</span>
+                {/* Results Box */}
+                <div className={styles.resultsBox}>
+                    <h3 className={styles.resultsBoxTitle}>Documentos legislativos</h3>
+                    <div className={styles.resultsBoxCount}>
+                        {totalResults.toLocaleString()} <span>resultados</span>
                     </div>
                     {oldestDocumentDate && latestDocumentDate && (
-                        <p className={styles.greenBoxDate}>
+                        <p className={styles.resultsBoxDate}>
                             Desde {formatDate(oldestDocumentDate)} hasta {formatDate(latestDocumentDate)}
                         </p>
                     )}

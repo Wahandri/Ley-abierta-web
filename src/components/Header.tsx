@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './Header.module.css';
@@ -37,7 +38,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.container}>
         <Link href="/" className={styles.logoWrapper} aria-label="Ley Abierta - Inicio">
-          <img src="/logo.png" alt="Ley Abierta" className={styles.logo} />
+          <Image src="/logo.png" alt="Ley Abierta" className={styles.logo} width={475} height={140} priority />
         </Link>
 
         <button

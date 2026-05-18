@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function ComoFuncionaPage() {
@@ -6,7 +7,7 @@ export default function ComoFuncionaPage() {
             <div className={styles.content}>
                 <header className={styles.header}>
                     <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
-                        <img src="/logo.png" alt="Ley Abierta Logo" style={{ width: '400px', height: 'auto' }} />
+                        <Image src="/logo.png" alt="Ley Abierta Logo" width={400} height={118} priority />
                     </div>
                     <h1 className={styles.title}>Cómo funciona Ley Abierta</h1>
                     <p className={styles.subtitle}>

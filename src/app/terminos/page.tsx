@@ -26,7 +26,7 @@ export default function TerminosPage() {
                 <section className={styles.section}>
                     <h2>3. Limitación de Responsabilidad</h2>
                     <p>
-                        La información presentada en Ley Abierta se proporciona "tal cual" con fines
+                        La información presentada en Ley Abierta se proporciona &ldquo;tal cual&rdquo; con fines
                         informativos y educativos. Aunque nos esforzamos por la precisión, no garantizamos
                         la exactitud, integridad o actualidad de la información.
                     </p>

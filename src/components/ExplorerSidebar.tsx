@@ -37,16 +37,10 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
     const currentAffects = searchParams.get('affects')?.split(',').filter(Boolean) || [];
     const currentFrom = searchParams.get('from') || '';
     const currentTo = searchParams.get('to') || '';
-    const currentSort = searchParams.get('sortBy') || 'date';
     const currentTypes = searchParams.get('type')?.split(',').filter(Boolean) || [];
     const currentStatus = searchParams.get('status')?.split(',').filter(Boolean) || [];
     const currentJurisdiction = searchParams.get('jurisdiction')?.split(',').filter(Boolean) || [];
     const currentMinistry = searchParams.get('ministry')?.split(',').filter(Boolean) || [];
-
-    // Update local search state when URL changes (e.g., browser back/forward)
-    useEffect(() => {
-        setSearchQuery(searchParams.get('q') || '');
-    }, [searchParams]);
 
     // ESC key handler for mobile drawer
     useEffect(() => {
@@ -97,18 +91,6 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
         return () => sidebar.removeEventListener('keydown', handleTab);
     }, [isOpen]);
 
-    // Debounced search
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            const currentQ = searchParams.get('q') || '';
-            if (searchQuery !== currentQ) {
-                updateURL({ q: searchQuery || undefined });
-            }
-        }, 250);
-
-        return () => clearTimeout(timer);
-    }, [searchQuery]);
-
     const updateURL = useCallback((updates: Record<string, string | string[] | undefined>) => {
         const params = new URLSearchParams(searchParams.toString());
 
@@ -130,6 +112,22 @@ export default function ExplorerSidebar({ facets, totalResults = 0, latestDocume
 
         router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }, [searchParams, router, pathname]);
+
+    const updateURLRef = useRef(updateURL);
+    const searchParamsRef = useRef(searchParams);
+
+    useEffect(() => { updateURLRef.current = updateURL; }, [updateURL]);
+    useEffect(() => { searchParamsRef.current = searchParams; }, [searchParams]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const currentQ = searchParamsRef.current.get('q') || '';
+            if (searchQuery !== currentQ) {
+                updateURLRef.current({ q: searchQuery || undefined });
+            }
+        }, 250);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     const handleImpactClick = (impact: string) => {
         updateURL({ impact: currentImpact === impact ? undefined : impact });

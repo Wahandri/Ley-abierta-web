@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
@@ -116,7 +117,7 @@ function HomeContent() {
       <div className={styles.topBar}>
         <div className={styles.topBarInner}>
           <div className={styles.brand}>
-            <img src="/logo.png" alt="Ley Abierta" className={styles.logo} />
+            <Image src="/logo.png" alt="Ley Abierta" className={styles.logo} width={475} height={140} priority />
             <div className={styles.stats}>
               <span className={styles.stat}>
                 <strong>{totalResults.toLocaleString()}</strong> documentos

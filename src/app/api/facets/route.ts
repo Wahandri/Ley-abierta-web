@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getFacets } from '@/lib/documents';
 
 const BOE_API_URL = process.env.BOE_API_URL;
 const BOE_API_KEY = process.env.BOE_API_KEY || '';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         if (BOE_API_URL) {
             const headers: Record<string, string> = {};

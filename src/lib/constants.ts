@@ -169,7 +169,8 @@ export function getAffectedLabel(group: string): string {
 /**
  * Format date to dd/mm/yyyy
  */
-export function formatDate(dateString: string): string {
+export function formatDate(dateString: string | null | undefined): string {
+    if (!dateString) return '';
     try {
         const date = new Date(dateString);
         const day = String(date.getDate()).padStart(2, '0');
@@ -184,7 +185,8 @@ export function formatDate(dateString: string): string {
 /**
  * Truncate text with ellipsis
  */
-export function truncate(text: string, maxLength: number): string {
+export function truncate(text: string | null | undefined, maxLength: number): string {
+    if (!text) return '';
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength).trim() + '...';
 }

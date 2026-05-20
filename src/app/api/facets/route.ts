@@ -7,15 +7,19 @@ const BOE_API_KEY = process.env.BOE_API_KEY || '';
 export async function GET() {
     try {
         if (BOE_API_URL) {
-            const headers: Record<string, string> = {};
-            if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
-            const response = await fetch(`${BOE_API_URL}/boe/facets`, {
-                headers,
-                next: { revalidate: 300 }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                return NextResponse.json(data);
+            try {
+                const headers: Record<string, string> = {};
+                if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
+                const response = await fetch(`${BOE_API_URL}/boe/facets`, {
+                    headers,
+                    next: { revalidate: 300 }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    return NextResponse.json(data);
+                }
+            } catch {
+                console.warn('External API unavailable, falling back to local cache');
             }
         }
 

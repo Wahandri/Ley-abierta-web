@@ -12,15 +12,19 @@ export async function GET(
         const { id } = await params;
 
         if (BOE_API_URL) {
-            const headers: Record<string, string> = {};
-            if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
-            const response = await fetch(`${BOE_API_URL}/boe/docs/${id}`, {
-                headers,
-                next: { revalidate: 300 }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                return NextResponse.json(data);
+            try {
+                const headers: Record<string, string> = {};
+                if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
+                const response = await fetch(`${BOE_API_URL}/boe/docs/${id}`, {
+                    headers,
+                    next: { revalidate: 300 }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    return NextResponse.json(data);
+                }
+            } catch {
+                console.warn('External API unavailable, falling back to local cache');
             }
         }
 

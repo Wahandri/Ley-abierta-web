@@ -4,6 +4,38 @@
 
 import { Document } from './jsonl';
 
+function normalizeTopic(topic: string): string {
+    return (topic || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/_/g, ' ');
+}
+
+function matchTopicKey(normalized: string): string {
+    const keyMap: Record<string, string> = {
+        'economia': 'economia',
+        'empleo': 'empleo',
+        'sanidad': 'sanidad',
+        'educacion': 'educacion',
+        'justicia': 'justicia',
+        'vivienda': 'vivienda',
+        'transporte': 'transporte',
+        'energia': 'energia',
+        'medio ambiente': 'medio_ambiente',
+        'administracion': 'administracion',
+        'tecnologia': 'tecnologia',
+        'agricultura': 'agricultura',
+        'seguridad': 'seguridad',
+        'defensa': 'defensa',
+        'cultura': 'cultura',
+        'politica social': 'politica_social',
+        'otros': 'otros',
+        'no determinado': 'no_determinado'
+    };
+    return keyMap[normalized] || normalized;
+}
+
 // Document types (basado en datos reales del BOE)
 export const DOCUMENT_TYPES = {
     ley: 'Ley',
@@ -64,25 +96,26 @@ export const DOCUMENT_INTENT_LABELS: Record<string, { label: string, color: stri
 };
 
 
-// Topics
-export const TOPICS = {
+// Topics (sincronizado con backend VALID_TOPICS)
+export const TOPICS: Record<string, string> = {
     economia: 'Economía',
-    vivienda: 'Vivienda',
+    empleo: 'Empleo',
     sanidad: 'Sanidad',
     educacion: 'Educación',
-    empleo: 'Empleo',
     justicia: 'Justicia',
-    medio_ambiente: 'Medio Ambiente',
+    vivienda: 'Vivienda',
     transporte: 'Transporte',
-    cultura: 'Cultura',
+    energia: 'Energía',
+    medio_ambiente: 'Medio Ambiente',
+    administracion: 'Administración',
     tecnologia: 'Tecnología',
-    defensa: 'Defensa',
-    seguridad: 'Seguridad',
     agricultura: 'Agricultura',
-    industria: 'Industria',
-    comercio: 'Comercio',
-    turismo: 'Turismo',
-    otros: 'Otros'
+    seguridad: 'Seguridad',
+    defensa: 'Defensa',
+    cultura: 'Cultura',
+    politica_social: 'Política Social',
+    otros: 'Otros',
+    no_determinado: 'No determinado'
 };
 
 // Affected groups
@@ -156,7 +189,10 @@ export function getStatusLabel(type: string): string {
  * Get label for topic
  */
 export function getTopicLabel(topic: string): string {
-    return TOPICS[topic as keyof typeof TOPICS] || topic;
+    if (!topic) return 'Otros';
+    const normalized = normalizeTopic(topic);
+    const key = matchTopicKey(normalized);
+    return TOPICS[key] || topic;
 }
 
 /**

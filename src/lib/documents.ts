@@ -31,20 +31,48 @@ async function initializeCache(): Promise<void> {
 }
 
 /**
- * Get all documents from cache
+ * Get all documents - fetches directly from API with high page_size
+ * Use sparingly (sitemap, exports). Prefer queryDocs() for browsing.
  */
-export async function getAllDocs(): Promise<Document[]> {
-    await initializeCache();
-    return documentsCache || [];
+export async function getAllDocs(pageSize: number = 500, maxPages: number = 10): Promise<Document[]> {
+    try {
+        const allDocs: Document[] = [];
+        for (let page = 1; page <= maxPages; page++) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+            const res = await fetch(`${API_BASE_URL}/boe/docs?page=${page}&page_size=${pageSize}&sort_by=date&sort_order=asc`, {
+                signal: controller.signal,
+                cache: 'no-store'
+            });
+            clearTimeout(timeout);
+            if (!res.ok) break;
+            const data = await res.json();
+            allDocs.push(...data.docs);
+            if (!data.hasMore) break;
+        }
+        return allDocs;
+    } catch {
+        return [];
+    }
 }
 
 /**
  * Get document by ID
  */
+const API_BASE_URL = process.env.BOE_API_URL || 'http://localhost:8000';
+
 export async function getDocById(id: string): Promise<Document | null> {
-    await initializeCache();
-    const doc = documentsCache?.find(d => d.id === id);
-    return doc || null;
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        const res = await fetch(`${API_BASE_URL}/boe/docs/${id}`, { signal: controller.signal, cache: 'no-store' });
+        clearTimeout(timeout);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.doc || null;
+    } catch {
+        return null;
+    }
 }
 
 /**
@@ -250,117 +278,102 @@ export interface Facets {
 }
 
 export async function getFacets(): Promise<Facets> {
-    await initializeCache();
-
-    const docs = documentsCache || [];
-
-    const topic_counts: Record<string, number> = {};
-    const affects_counts: Record<string, number> = {};
-    const impact_counts = { low: 0, mid: 0, high: 0 };
-    const type_counts: Record<string, number> = {};
-    const status_counts: Record<string, number> = { vigente: 0, derogada: 0 };
-    const jurisdiction_counts: Record<string, number> = {};
-    const ministry_counts: Record<string, number> = {};
-
-    for (const doc of docs) {
-        // Topic counts
-        const topic = doc.topic_primary || 'otros';
-        topic_counts[topic] = (topic_counts[topic] || 0) + 1;
-
-        // Type counts
-        const docType = doc.type || 'otro';
-        type_counts[docType] = (type_counts[docType] || 0) + 1;
-
-        // Status counts (inferido de document_intent)
-        const docStatus = doc.document_intent === 'deroga' ? 'derogada' : 'vigente';
-        status_counts[docStatus]++;
-
-        // Jurisdiction counts
-        const scope = doc.geographic_scope || doc.document_scope;
-        if (scope) {
-            const scopes = Array.isArray(scope) ? scope : [scope];
-            scopes.forEach(s => {
-                const lower = s.toLowerCase();
-                let key = 'nacional';
-                if (lower.includes('autonóm') || lower.includes('cc.aa') || lower.includes('comunidad')) key = 'autonomico';
-                else if (lower.includes('internac')) key = 'internacional';
-                else if (lower.includes('europe') || lower.includes('ue')) key = 'europeo';
-                else if (lower.includes('local') || lower.includes('ayto')) key = 'local';
-                jurisdiction_counts[key] = (jurisdiction_counts[key] || 0) + 1;
-            });
-        } else {
-            jurisdiction_counts['no_definido'] = (jurisdiction_counts['no_definido'] || 0) + 1;
-        }
-
-        // Ministry counts
-        const entities = doc.entities_detected || [];
-        const docMinisterios = entities
-            .filter(e => e.type === 'organismo' && e.name?.toLowerCase().includes('ministerio'))
-            .map(e => e.name);
-        docMinisterios.forEach(m => {
-            ministry_counts[m] = (ministry_counts[m] || 0) + 1;
-        });
-
-        // Affects counts
-        if (doc.affects_to) {
-            for (const group of doc.affects_to) {
-                affects_counts[group] = (affects_counts[group] || 0) + 1;
+    try {
+        const res = await fetch(`${API_BASE_URL}/boe/facets`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        return {
+            topic_counts: data.topic_counts || {},
+            affects_counts: data.affects_counts || {},
+            impact_counts: data.impact_counts || { low: 0, mid: 0, high: 0 },
+            type_counts: data.type_counts || {},
+            status_counts: data.status_counts || {},
+            jurisdiction_counts: data.jurisdiction_counts || {},
+            ministry_counts: data.ministry_counts || {},
+        };
+    } catch {
+        // Fallback to local cache
+        await initializeCache();
+        const docs = documentsCache || [];
+        const topic_counts: Record<string, number> = {};
+        const affects_counts: Record<string, number> = {};
+        const impact_counts = { low: 0, mid: 0, high: 0 };
+        const type_counts: Record<string, number> = {};
+        const status_counts: Record<string, number> = { vigente: 0, derogada: 0 };
+        const jurisdiction_counts: Record<string, number> = {};
+        const ministry_counts: Record<string, number> = {};
+        for (const doc of docs) {
+            const topic = doc.topic_primary || 'otros';
+            topic_counts[topic] = (topic_counts[topic] || 0) + 1;
+            const docType = doc.type || 'otro';
+            type_counts[docType] = (type_counts[docType] || 0) + 1;
+            const docStatus = doc.document_intent === 'deroga' ? 'derogada' : 'vigente';
+            status_counts[docStatus]++;
+            const scope = doc.geographic_scope || doc.document_scope;
+            if (scope) {
+                const scopes = Array.isArray(scope) ? scope : [scope];
+                scopes.forEach(s => {
+                    const lower = s.toLowerCase();
+                    let key = 'nacional';
+                    if (lower.includes('autonóm') || lower.includes('cc.aa') || lower.includes('comunidad')) key = 'autonomico';
+                    else if (lower.includes('internac')) key = 'internacional';
+                    else if (lower.includes('europe') || lower.includes('ue')) key = 'europeo';
+                    else if (lower.includes('local') || lower.includes('ayto')) key = 'local';
+                    jurisdiction_counts[key] = (jurisdiction_counts[key] || 0) + 1;
+                });
             }
+            const entities = doc.entities_detected || [];
+            entities.filter((e: any) => e.type === 'organismo' && e.name?.toLowerCase().includes('ministerio'))
+                .forEach((e: any) => { ministry_counts[e.name] = (ministry_counts[e.name] || 0) + 1; });
+            if (doc.affects_to) {
+                for (const group of doc.affects_to) {
+                    affects_counts[group] = (affects_counts[group] || 0) + 1;
+                }
+            }
+            const impactLevel = getImpactLevel(doc.impact_index?.overall ?? doc.impact_index?.score ?? 0);
+            impact_counts[impactLevel]++;
         }
-
-        // Impact counts
-        const impactLevel = getImpactLevel(doc.impact_index?.overall ?? doc.impact_index?.score ?? 0);
-        impact_counts[impactLevel]++;
+        return { topic_counts, affects_counts, impact_counts, type_counts, status_counts, jurisdiction_counts, ministry_counts };
     }
-
-    return {
-        topic_counts,
-        affects_counts,
-        impact_counts,
-        type_counts,
-        status_counts,
-        jurisdiction_counts,
-        ministry_counts
-    };
 }
 
 /**
  * Get related documents based on content similarity
  */
 export async function getRelatedDocs(currentDoc: Document, limit: number = 3): Promise<Document[]> {
-    await initializeCache();
-    const docs = documentsCache || [];
-
-    // Filter out current doc
-    const candidates = docs.filter(d => d.id !== currentDoc.id);
-
-    // Score candidates
-    const scored = candidates.map(doc => {
-        let score = 0;
-
-        // Same topic: +3
-        if (doc.topic_primary === currentDoc.topic_primary) score += 3;
-
-        // Matching affects_to: +2 per match
-        if (doc.affects_to && currentDoc.affects_to) {
-            const intersection = doc.affects_to.filter(a => currentDoc.affects_to?.includes(a));
-            score += intersection.length * 2;
-        }
-
-        // Matching keywords: +1 per match
-        if (doc.keywords && currentDoc.keywords) {
-            const intersection = doc.keywords.filter(k => currentDoc.keywords.includes(k));
-            score += intersection.length;
-        }
-
-        return { doc, score };
-    });
-
-    // Sort by score desc, then date desc
-    scored.sort((a, b) => {
-        if (b.score !== a.score) return b.score - a.score;
-        return new Date(b.doc.date_published).getTime() - new Date(a.doc.date_published).getTime();
-    });
-
-    return scored.slice(0, limit).map(s => s.doc);
+    try {
+        const topic = currentDoc.topic_primary;
+        const res = await fetch(
+            `${API_BASE_URL}/boe/docs?topic=${encodeURIComponent(topic)}&page_size=${limit + 1}`,
+            { cache: 'no-store' }
+        );
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        return (data.docs || [])
+            .filter((d: Document) => d.id !== currentDoc.id)
+            .slice(0, limit);
+    } catch {
+        // Fallback to local cache scoring
+        await initializeCache();
+        const docs = documentsCache || [];
+        const candidates = docs.filter(d => d.id !== currentDoc.id);
+        const scored = candidates.map(doc => {
+            let score = 0;
+            if (doc.topic_primary === currentDoc.topic_primary) score += 3;
+            if (doc.affects_to && currentDoc.affects_to) {
+                const intersection = doc.affects_to.filter(a => currentDoc.affects_to?.includes(a));
+                score += intersection.length * 2;
+            }
+            if (doc.keywords && currentDoc.keywords) {
+                const intersection = doc.keywords.filter(k => currentDoc.keywords?.includes(k));
+                score += intersection.length;
+            }
+            return { doc, score };
+        });
+        scored.sort((a, b) => {
+            if (b.score !== a.score) return b.score - a.score;
+            return new Date(b.doc.date_published).getTime() - new Date(a.doc.date_published).getTime();
+        });
+        return scored.slice(0, limit).map(s => s.doc);
+    }
 }

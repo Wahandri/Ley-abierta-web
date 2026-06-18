@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDocById } from '@/lib/documents';
 
-const BOE_API_URL = process.env.BOE_API_URL;
+const BOE_API_URL = process.env.BOE_API_URL || 'http://localhost:8000';
 const BOE_API_KEY = process.env.BOE_API_KEY || '';
 
 export async function GET(
@@ -10,39 +9,28 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-
-        if (BOE_API_URL) {
-            try {
-                const headers: Record<string, string> = {};
-                if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
-                const response = await fetch(`${BOE_API_URL}/boe/docs/${id}`, {
-                    headers,
-                    next: { revalidate: 300 }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    return NextResponse.json(data);
-                }
-            } catch {
-                console.warn('External API unavailable, falling back to local cache');
+        const headers: Record<string, string> = {};
+        if (BOE_API_KEY) headers['X-API-Key'] = BOE_API_KEY;
+        const response = await fetch(`${BOE_API_URL}/boe/docs/${id}`, {
+            headers,
+            next: { revalidate: 300 }
+        });
+        if (!response.ok) {
+            if (response.status === 404) {
+                return NextResponse.json(
+                    { error: 'Document not found' },
+                    { status: 404 }
+                );
             }
+            throw new Error(`API responded with status ${response.status}`);
         }
-
-        const doc = await getDocById(id);
-
-        if (!doc) {
-            return NextResponse.json(
-                { error: 'Document not found' },
-                { status: 404 }
-            );
-        }
-
-        return NextResponse.json({ doc });
+        const data = await response.json();
+        return NextResponse.json(data);
     } catch (error) {
         console.error('Error in /api/docs/[id]:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch document' },
-            { status: 500 }
+            { error: 'Failed to fetch document from backend API' },
+            { status: 503 }
         );
     }
 }

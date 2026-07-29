@@ -1,6 +1,8 @@
 import { Document, parseJSONL, getDataFilePaths } from './jsonl';
 import { getImpactLevel } from './constants';
 
+const API_BASE_URL = process.env.BOE_API_URL || 'http://localhost:8000';
+
 // In-memory cache
 let documentsCache: Document[] | null = null;
 let cacheInitialized = false;
@@ -59,7 +61,6 @@ export async function getAllDocs(pageSize: number = 500, maxPages: number = 10):
 /**
  * Get document by ID
  */
-const API_BASE_URL = process.env.BOE_API_URL || 'http://localhost:8000';
 
 export async function getDocById(id: string): Promise<Document | null> {
     try {
@@ -323,8 +324,8 @@ export async function getFacets(): Promise<Facets> {
                 });
             }
             const entities = doc.entities_detected || [];
-            entities.filter((e: any) => e.type === 'organismo' && e.name?.toLowerCase().includes('ministerio'))
-                .forEach((e: any) => { ministry_counts[e.name] = (ministry_counts[e.name] || 0) + 1; });
+            entities.filter((e: {type?: string; name?: string}) => e.type === 'organismo' && e.name?.toLowerCase().includes('ministerio'))
+                .forEach((e: {name?: string}) => { if (e.name) ministry_counts[e.name] = (ministry_counts[e.name] || 0) + 1; });
             if (doc.affects_to) {
                 for (const group of doc.affects_to) {
                     affects_counts[group] = (affects_counts[group] || 0) + 1;

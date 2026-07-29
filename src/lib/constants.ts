@@ -37,21 +37,38 @@ function matchTopicKey(normalized: string): string {
 }
 
 // Document types (basado en datos reales del BOE)
-export const DOCUMENT_TYPES = {
+export const DOCUMENT_TYPES: Record<string, string> = {
     ley: 'Ley',
+    ley_organica: 'Ley Orgánica',
     real_decreto: 'Real Decreto',
     orden: 'Orden',
     resolucion: 'Resolución',
     acuerdo: 'Acuerdo',
-    otro: 'Otro',
-    reglamento: 'Reglamento',
-    circular: 'Circular'
+    circular: 'Circular',
+    instruccion: 'Instrucción',
+    otro: 'Otro'
 };
 
-// Document status (basado en document_intent)
-export const DOCUMENT_STATUS = {
-    vigente: { label: 'Vigente', description: 'Normas activas' },
-    derogada: { label: 'Derogada', description: 'Normas derogadas' }
+// Document intents (status) - sincronizado con los valores reales de document_intent en MariaDB
+export const DOCUMENT_STATUS: Record<string, { label: string, description: string }> = {
+    convoca: { label: 'Convoca', description: 'Convocatorias' },
+    resuelve_convocatoria: { label: 'Resuelve', description: 'Resolución de convocatorias' },
+    publica_acuerdo: { label: 'Acuerdo', description: 'Publicación de acuerdos' },
+    nombra: { label: 'Nombra', description: 'Nombramientos y ceses' },
+    modifica: { label: 'Modifica', description: 'Modificaciones normativas' },
+    corrige: { label: 'Corrige', description: 'Correcciones' },
+    regula: { label: 'Regula', description: 'Regulación' },
+    crea: { label: 'Crea', description: 'Creación' },
+    aprueba_plan: { label: 'Plan', description: 'Aprobación de planes' },
+    convalida: { label: 'Convalida', description: 'Convalidaciones' },
+    amplia: { label: 'Amplía', description: 'Ampliaciones' },
+    autoriza: { label: 'Autoriza', description: 'Autorizaciones' },
+    deroga: { label: 'Deroga', description: 'Derogaciones' },
+    no_determinado: { label: 'Sin determinar', description: 'No clasificado' },
+    aprueba_gasto: { label: 'Gasto', description: 'Aprobación de gasto' },
+    sanciona: { label: 'Sanciona', description: 'Sanciones' },
+    adjudica: { label: 'Adjudica', description: 'Adjudicaciones' },
+    otro: { label: 'Otro', description: 'Otros' }
 };
 
 // Jurisdicción (ámbitogeográfico)
@@ -86,13 +103,23 @@ export const MINISTERIOS = [
 
 // Document intents
 export const DOCUMENT_INTENT_LABELS: Record<string, { label: string, color: string, icon: string }> = {
-    convalida: { label: 'Convalida', color: '#8b5cf6', icon: '📝' }, // purple
-    nombra: { label: 'Nombra/Cesa', color: '#3b82f6', icon: '👤' }, // blue
-    resuelve_convocatoria: { label: 'Resuelve', color: '#10b981', icon: '✅' }, // emerald
-    aprueba_plan: { label: 'Aprueba Plan', color: '#f59e0b', icon: '🎯' }, // amber
-    publica_acuerdo: { label: 'Acuerdo', color: '#6366f1', icon: '🤝' }, // indigo
-    modifica: { label: 'Modifica', color: '#f97316', icon: '🔧' }, // orange
-    deroga: { label: 'Deroga', color: '#ef4444', icon: '🗑️' } // red
+    convalida: { label: 'Convalida', color: '#8b5cf6', icon: '📝' },
+    nombra: { label: 'Nombra/Cesa', color: '#3b82f6', icon: '👤' },
+    resuelve_convocatoria: { label: 'Resuelve', color: '#10b981', icon: '✅' },
+    aprueba_plan: { label: 'Aprueba Plan', color: '#f59e0b', icon: '🎯' },
+    publica_acuerdo: { label: 'Acuerdo', color: '#6366f1', icon: '🤝' },
+    modifica: { label: 'Modifica', color: '#f97316', icon: '🔧' },
+    deroga: { label: 'Deroga', color: '#ef4444', icon: '🗑️' },
+    convoca: { label: 'Convoca', color: '#06b6d4', icon: '📢' },
+    regula: { label: 'Regula', color: '#14b8a6', icon: '📋' },
+    crea: { label: 'Crea', color: '#22c55e', icon: '✨' },
+    autoriza: { label: 'Autoriza', color: '#eab308', icon: '✅' },
+    aprueba_gasto: { label: 'Aprueba Gasto', color: '#ef4444', icon: '💰' },
+    corrige: { label: 'Corrige', color: '#f97316', icon: '🔧' },
+    amplia: { label: 'Amplía', color: '#a855f7', icon: '📈' },
+    sanciona: { label: 'Sanciona', color: '#dc2626', icon: '⚖️' },
+    adjudica: { label: 'Adjudica', color: '#0ea5e9', icon: '🏷️' },
+    otro: { label: 'Otro', color: '#6b7280', icon: '📄' }
 };
 
 
@@ -110,9 +137,15 @@ export const TOPICS: Record<string, string> = {
     administracion: 'Administración',
     tecnologia: 'Tecnología',
     agricultura: 'Agricultura',
+    industria: 'Industria',
+    comercio: 'Comercio',
+    turismo: 'Turismo',
+    investigacion: 'Investigación',
+    comunicaciones: 'Comunicaciones',
     seguridad: 'Seguridad',
     defensa: 'Defensa',
     cultura: 'Cultura',
+    deporte: 'Deporte',
     politica_social: 'Política Social',
     otros: 'Otros',
     no_determinado: 'No determinado'
@@ -237,20 +270,30 @@ export function getDisplayTitle(doc: Document): string {
         return doc.short_title;
     }
 
-    if (doc.summary_plain_es) {
+    const cleanSummary = getCleanSummary(doc.summary_plain_es)
+    if (cleanSummary) {
         // extract first sentence
-        const match = doc.summary_plain_es.match(/^[^.]+\./);
+        const match = cleanSummary.match(/^[^.]+\./);
         if (match && match[0].length > 20) {
             return match[0];
         }
         // If no dot or too short, try splitting by newline or just use the whole summary if short?
         // Let's stick to the plan: first segment by '.'
-        const firstSegment = doc.summary_plain_es.split('.')[0].trim();
+        const firstSegment = cleanSummary.split('.')[0].trim();
         if (firstSegment.length > 20) {
             return firstSegment + '.';
         }
     }
     return doc.title_original;
+}
+
+/**
+ * Clean summary text, filtering out error artifacts like "[Error al procesar]"
+ */
+export function getCleanSummary(summary: string | null | undefined): string {
+    if (!summary) return 'No hay resumen disponible para este documento.'
+    const cleaned = summary.replace(/^\[Error al procesar[^\]]*\][.\s]*/i, '')
+    return cleaned || 'No hay resumen disponible para este documento.'
 }
 
 /**

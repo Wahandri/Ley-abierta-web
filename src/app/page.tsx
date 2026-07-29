@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 import ExplorerSidebar from '@/components/ExplorerSidebar';
 import DocCard from '@/components/DocCard';
 import SortControl from '@/components/SortControl';
+import TypeTabs from '@/components/TypeTabs';
 import EmptyState from '@/components/EmptyState';
 import { Document } from '@/lib/jsonl';
 
@@ -117,7 +117,6 @@ function HomeContent() {
       <div className={styles.topBar}>
         <div className={styles.topBarInner}>
           <div className={styles.brand}>
-            <Image src="/logo.png" alt="Ley Abierta" className={styles.logo} width={475} height={140} priority />
             <div className={styles.stats}>
               <span className={styles.stat}>
                 <strong>{totalResults.toLocaleString()}</strong> documentos
@@ -169,6 +168,7 @@ function HomeContent() {
 
           {docs.length > 0 && (
             <>
+              <TypeTabs />
               <div className={styles.grid}>
                 {docs.map(doc => (
                   <DocCard key={doc.id} doc={doc} />

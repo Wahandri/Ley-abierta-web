@@ -22,7 +22,8 @@ export default function Header() {
 
   const pathname = usePathname();
   const isHome = pathname === '/';
-  const isGastoPublico = pathname === '/gasto-publico';
+  const isDashboard = pathname === '/dashboard';
+  const isGasto = pathname.startsWith('/gasto-publico') || pathname.startsWith('/contratos');
   const isComoFunciona = pathname === '/como-funciona';
 
   useEffect(() => {
@@ -56,7 +57,10 @@ export default function Header() {
           <Link href="/" className={`${styles.navLink} ${isHome ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
             Explorador
           </Link>
-          <Link href="/gasto-publico" className={`${styles.navLink} ${isGastoPublico ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
+          <Link href="/dashboard" className={`${styles.navLink} ${isDashboard ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
+            Dashboard
+          </Link>
+          <Link href="/gasto-publico" className={`${styles.navLink} ${isGasto ? styles.navLinkActive : ''}`} onClick={() => setMobileMenuOpen(false)}>
             Gasto Público
           </Link>
           <Link

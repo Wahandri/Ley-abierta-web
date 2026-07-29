@@ -28,13 +28,6 @@
   min-width: 0;
 }
 
-.logo {
-  height: 28px;
-  width: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
 .stats {
   display: flex;
   align-items: center;
